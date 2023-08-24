@@ -74,7 +74,7 @@ textはVarchar
 
 ### 記述例
 
-"""mermaid
+:::mermaid
 erDiagram
 erDiagram
     journey }|--|{ venue : ""
@@ -103,4 +103,4 @@ place {
     longitude text
     altitude text
 }
-"""
+:::
