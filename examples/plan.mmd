@@ -1,0 +1,200 @@
+erDiagram
+    journey ||--|{ story : "第〇旅が前後編に分割されるケース"
+    journey }|--|{ venue : ""
+    comic |o--|{ story : ""
+    magazine |o--|| story : ""
+    web_comic |o--|| story : "Web掲載された単話、単行本に未収録もあり"
+    fragment |o--|| story : "その他雑多な絵に関連する単話"
+    story }|--|{ venue : ""
+    story }|--|{ place : ""
+    story }|--|{ route : ""
+    venue ||--|{ place : ""
+    route }|--|{ place : ""
+    magazine |o--o| web_comic : "雑誌連載はWeb連載時には分割されている"
+    web_comic |o--o| fragment : "ストーリー以外のWeb連載に登場した絵"
+    fragment |o--o| place : ""
+    story }|--|{ character : ""
+    place }|--|{ character : ""
+    fragment }|--o{ character : ""
+    scene }|--o{ character : ""
+    scene }|--o| place : ""
+    scene }o--o| story : ""
+    scene }o--o| venue : ""
+    place ||--o{ tweet : ""
+    tweet }o--o| user : ""
+    place ||--o{ photo : ""
+    photo }o--o| user : ""
+    series |o--o{ comic : "複数巻の作品の、シリーズ名"
+    group ||--|{ user : "ユーザーは何れかのグループに所属する"
+
+
+series {
+    id serial PK
+    %% 正確な作品の名称
+    title text "作品名"
+    %% 略称や通称で代表的なもの
+    short_title text "略称"
+    author text "著者名"
+    %% 出版社 例：KADOKAWA
+    publisher text "出版社"
+    %% コミック・シリーズのレーベル名称 例：電撃コミックスNEXT
+    label text "レーベル"
+    %% 雑誌連載の誌名か、Web連載のレーベル名称
+    magazine_title text "連載誌"
+}
+
+%% comic 単行本 1巻、2巻、…。単巻のみの場合はseries_id=NULL
+comic {
+    id serial PK
+    series_id int FK
+    number int
+    %% 例：ざつ旅-That's Journey- 1
+    title text "各巻タイトル"
+    %% 特徴的な帯の文言
+    obi text "オビ"
+    %% 巻末の奥付にある、初版発行日
+    issued date "発行日"
+    released date "書店発売日"
+    %% 版元ドットコムの書誌情報DBより
+    cover_image_url text "書影url"
+    isbn text "ISBN13"
+}
+
+%% web_comic Web連載 第1旅(1)、番外旅、一枚モノ、…
+web_comic {
+    id serial PK
+    story_id int FK
+    magazine_id int FK
+    title text "各話の名前"
+    pages int "ページ数"
+    cw_url text "Comic Walker"
+    cw_published date
+    nico_url text "ニコニコ静画"
+    nico_published date
+    memo text
+}
+
+%% magazine 雑誌連載 マオウ
+magazine {
+    id serial PK
+    story_id int FK
+    %% 雑誌のタイトル 例：電撃マオウ 2020年1月号
+    title text "タイトル"
+    %% 書店等での発売日 ※タイトルの月の2か月前27日前後
+    released date "発売日"
+    memo text
+}
+
+%% fragment その他媒体 表紙カラー、店舗特典、ポスター。コミック収録と未収録がある
+fragment {
+    id serial PK
+    story_id int FK
+    %% web_comic
+    web_comic_id int FK
+    character_id int FK
+    place_id int FK
+    title text
+    url text ""
+    memo text
+}
+
+%% journey 第〇旅、番外旅
+journey {
+    id serial PK
+    key text
+    %% 1:本編 2:番外旅 9:その他
+    type int "タイプ"
+    memo text
+}
+
+%% story 単行本の単話 第〇旅前編、第〇旅後編。コミック未収録もある
+story {
+    id serial PK
+    comic_id int FK
+    journey_id int FK
+    title text
+    subtitle text
+    %% place このストーリーに登場する主な地点をすべて包含するような範囲（四角形）の中心
+    camera_center_place_id int FK
+    camera_zoom_level int
+}
+
+%% venue 目的地 会津、松島、那須、…
+venue {
+    id serial PK
+    journey_id int FK
+    name text
+}
+
+%% place 場所 東京駅の顔出しパネル、登場店舗、宿泊場所、観光名所、施設、交通拠点
+place {
+    id serial PK
+    venue_id int FK
+    name text
+    latitude text
+    longitude text
+    altitude text
+}
+
+%% route 経路 placeを組み合わせて経路とする
+route {
+    id serial PK
+    name text
+}
+
+%% character キャラクター 主要5人、編集部、他
+character {
+    id serial PK
+    name text
+    type text
+    description text
+}
+
+%% scene シーン 名シーン、ざつ旅ARのマーカー
+scene {
+    id serial PK
+    story_id int FK
+    venue_id int FK
+    place_id int FK
+    memo text
+}
+
+%% photo flickr (google place photo api有料)
+photo {
+    id serial PK
+    place_id int FK
+    user_id int FK
+    url text
+    width int
+    height int
+}
+
+%% tweet Twitter 石坂さん、鈴ヶ森さん、読者等、無関係
+tweet {
+    id serial PK
+    user_id int FK
+    place_id int FK
+    type int
+    url text
+    description text
+}
+
+%% user ユーザー 利用者
+user {
+    id serial PK
+    group_id int FK
+    name text
+    type int
+    memo text
+}
+
+%% group グループ
+group {
+    id serial PK
+    name text
+    visibility int
+    memo text
+}
+
+%% role
+%% permission 権限
