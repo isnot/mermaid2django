@@ -54,7 +54,6 @@ class RenderDjangoModel(AbstractRender):
         "{relation}",
         verbose_name="{verbose}",
         related_name="{rel}",
-        on_delete=models.{delete},
     )""",
     }
     MODULE_HEADER = "from django.db import models"
@@ -70,7 +69,6 @@ class RenderDjangoModel(AbstractRender):
         data = {}
         cset = self.cardinality_set.find_by_entity_name(table_name)
 
-        # print("scm t", table_name)
         for prop_name in self.entity.get_prop_names():
             prop = self.entity.get_prop(prop_name)
             pieces = prop_name.split("_")
@@ -78,7 +76,6 @@ class RenderDjangoModel(AbstractRender):
 
             if not prop["isFK"]:
                 continue
-            # print("scm p    ", prop_name, prop["isFK"])
             if prop["description"] is not None and prop["description"] != "":
                 # original named FK
                 e_forein_table = prop["description"].split(" ")[0]
@@ -91,21 +88,32 @@ class RenderDjangoModel(AbstractRender):
                 )
                 continue
 
-            # print("scm p    ", table_name, e_forein_table)
+            # print("scm p    ", prop["name"], table_name, e_forein_table)
             data[prop_name] = {}
 
             for citem in cset:
                 c_table_name = citem.leaf[1]
                 c_forein_table = citem.leaf[0]
                 if table_name != c_table_name:
-                    # print("##### T", citem.leaf, citem.type)
+                    # print("##### Ta", table_name, c_table_name)
                     continue
                 if e_forein_table != c_forein_table:
-                    # print("##### F", citem.leaf, citem.type)
+                    # print("##### Fo", e_forein_table, c_forein_table)
                     continue
-                # if table_name == c_table_name and e_forein_table == c_forein_table:
+                if prop["type"] != citem.type:
+                    # print("##### Ty", prop["type"], citem.type)
+                    continue
+
                 # print(citem)
-                # print("     ", table_name, c_table_name, c_forein_table, e_forein_table, citem.type)
+                # print(
+                #     "     #$",
+                #     table_name,
+                #     c_table_name,
+                #     e_forein_table,
+                #     c_forein_table,
+                #     prop["type"],
+                #     citem.type,
+                # )
 
     def get_property(self, name):
         property = self.entity.get_prop(name)
