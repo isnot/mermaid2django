@@ -32,6 +32,30 @@ class RenderDjangoModel(AbstractRender):
         verbose_name="{verbose}",
         auto_now_add=True
     )""",
+        "one2many": """
+    {mark}{name} {verbose} {description}{mark}
+    {name} = models.ForeignKey(
+        "{relation}",
+        verbose_name="{verbose}",
+        related_name="{rel}",
+        on_delete=models.{delete},
+    )""",
+        "one2one": """
+    {mark}{name} {verbose} {description}{mark}
+    {name} = models.OneToOneField(
+        "{relation}",
+        verbose_name="{verbose}",
+        related_name="{rel}",
+        on_delete=models.{delete},
+    )""",
+        "many2many": """
+    {mark}{name} {verbose} {description}{mark}
+    {name} = models.ManyToManyField(
+        "{relation}",
+        verbose_name="{verbose}",
+        related_name="{rel}",
+        on_delete=models.{delete},
+    )""",
     }
     MODULE_HEADER = "from django.db import models"
 
@@ -85,13 +109,39 @@ class RenderDjangoModel(AbstractRender):
 
     def get_property(self, name):
         property = self.entity.get_prop(name)
-        temp = RenderDjangoModel.TYPE2FIELD[property["type"]]
-        return temp.format(
-            name=property["name"],
-            verbose=property["verbose"],
-            description=property["description"],
-            mark='"""',
-        )
+        type = property["type"]
+        temp = RenderDjangoModel.TYPE2FIELD[type]
+        if type in (
+            "int",
+            "text",
+            "date",
+            "datetime",
+        ):
+            line = temp.format(
+                name=property["name"],
+                verbose=property["verbose"],
+                description=property["description"],
+                mark='"""',
+                quote='"',
+            )
+        elif type in (
+            "one2many",
+            "one2one",
+            "many2many",
+        ):
+            line = temp.format(
+                name=property["name"],
+                verbose=property["verbose"],
+                description=property["description"],
+                mark='"""',
+                quote='"',
+                delete="CASCADE",
+                relation="",
+                rel="",
+            )
+        else:
+            line = ""
+        return line
 
     def get_entity_header(self):
         name = self.entity.get_name()
