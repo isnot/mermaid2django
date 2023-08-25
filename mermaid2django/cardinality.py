@@ -7,8 +7,8 @@ class CardinalityExpression:
     def __str__(self):
         return self.piece
 
-    def is_one_or_zero(self, chop):
-        return chop == "|" or chop == "o"
+    def is_one_or_zero(self, piece):
+        return piece == "|" or piece == "o"
 
     def is_many2many(self):
         return (
@@ -80,14 +80,10 @@ class CardinalityItem:
             self.type = "many2many"
 
     def is_blongs_to_entity_name(self, entity_name):
-        (
-            left,
-            right,
-        ) = self.leaf
-        return entity_name == left or entity_name == right
+        return entity_name == self.leaf[0] or entity_name == self.leaf[1]
 
     def __str__(self):
-        return "{}--{} :=> {}".format(self.leaf[0], self.leaf[1], self.type)
+        return "{} {} {}".format(self.leaf[0], self.leaf[1], self.type)
 
 
 class CardinalitySet:
@@ -96,8 +92,8 @@ class CardinalitySet:
     def __init__(self, all=[]):
         self.cardinalities = set(all)
         for items in all:
-            for leaf in items.leaf:
-                self.ALL_ENTITIES_NAME.add(leaf)
+            self.ALL_ENTITIES_NAME.add(items.leaf[0])
+            self.ALL_ENTITIES_NAME.add(items.leaf[1])
 
     @staticmethod
     def is_many2many(e: CardinalityItem):

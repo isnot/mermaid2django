@@ -1,5 +1,5 @@
-from .cardinality import CardinalityItem, CardinalitySet
-from .entity import Entity
+from mermaid2django.cardinality import CardinalityItem, CardinalitySet
+from mermaid2django.entity import Entity
 
 
 class ParseMermaidErDiagram:
@@ -42,7 +42,6 @@ class ParseMermaidErDiagram:
     )
 
     def __init__(self, *args, **kwargs):
-        # super(CLASS_NAME, self).__init__(*args, **kwargs)
         self.entities = {}
         self.cardinalities = []
         self.cardinality_set = None  # CardinalitySet

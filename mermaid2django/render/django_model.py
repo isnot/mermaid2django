@@ -1,7 +1,6 @@
 from mermaid2django.cardinality import CardinalityItem, CardinalitySet
 from mermaid2django.entity import Entity
-
-from .abstract import AbstractRender
+from mermaid2django.render.abstract import AbstractRender
 
 
 class RenderDjangoModel(AbstractRender):

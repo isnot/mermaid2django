@@ -29,6 +29,17 @@ class Entity:
         "verbose",
         "description",
     )
+    VALID_TYPES = (
+        "serial",
+        "int",
+        "char",
+        "text",
+        "date",
+        "datetime",
+        "one2one",
+        "one2many",
+        "many2many",
+    )
 
     def __init__(self, *args):
         """
@@ -132,7 +143,7 @@ class Entity:
             else:
                 pkfk = ""
             p.append(
-                "\t".join(
+                " ".join(
                     (
                         i["name"],
                         i["type"],
@@ -141,4 +152,4 @@ class Entity:
                     )
                 )
             )
-        return "Table {} :=> {}".format(self.name, "\n".join(p).strip())
+        return "{} :=> {}".format(self.name, "\n".join(p).strip())
