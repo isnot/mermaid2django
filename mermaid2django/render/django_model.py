@@ -100,14 +100,13 @@ class RenderDjangoModel(AbstractRender):
             desc = name
         return """
 
-class {}(models.Model):
-    {} {}
-    {}
+class {mark}(models.Model):
+    {name} {description}
+    {mark}
 """.format(
-            name.capitalize(),
-            '"""',
-            desc,
-            '"""',
+            name=name.capitalize(),
+            description=desc,
+            mark='"""',
         )
 
     def get_entity_footer(self):
