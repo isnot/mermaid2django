@@ -77,6 +77,7 @@ textはVarchar
 ```mermaid
 erDiagram
     journey }|--|{ venue : ""
+    comic |o--o{ place : "コミックに登場する場所"
 
 %% comic コミック単行本 1巻、2巻、…
 comic {
@@ -94,7 +95,7 @@ comic {
 
 %% place 場所 例:東京タワー、等
 place {
-    id serial PK
+    %% comic コミックに登場する場所
     %% コミックに登場する場所
     comic_id int FK
     name text
