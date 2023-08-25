@@ -10,7 +10,7 @@ class CardinalityExpression:
     def is_one_or_zero(self, chop):
         return chop == "|" or chop == "o"
 
-    def is_multi2multi(self):
+    def is_many2many(self):
         return (
             self.piece[0] == "}"
             and self.is_one_or_zero(self.piece[1])
@@ -26,7 +26,7 @@ class CardinalityExpression:
             and self.piece[5] == "|"
         )
 
-    def is_one2multi(self):
+    def is_one2many(self):
         return (
             self.piece[0] == "|"
             and self.is_one_or_zero(self.piece[1])
@@ -34,7 +34,7 @@ class CardinalityExpression:
             and self.piece[5] == "{"
         )
 
-    def is_multi2one(self):
+    def is_many2one(self):
         return (
             self.piece[0] == "}"
             and self.is_one_or_zero(self.piece[1])
@@ -62,7 +62,7 @@ class CardinalityItem:
         self.description = memo.strip('"')
 
     def parse(self):
-        if self.expression.is_multi2one():
+        if self.expression.is_many2one():
             (
                 left,
                 right,
@@ -71,13 +71,13 @@ class CardinalityItem:
                 right,
                 left,
             )
-            self.type = "one2multi"
-        if self.expression.is_one2multi():
-            self.type = "one2multi"
+            self.type = "one2many"
+        if self.expression.is_one2many():
+            self.type = "one2many"
         if self.expression.is_one2one():
             self.type = "one2one"
-        if self.expression.is_multi2multi():
-            self.type = "multi2multi"
+        if self.expression.is_many2many():
+            self.type = "many2many"
 
     def is_blongs_to_entity_name(self, entity_name):
         (
@@ -100,12 +100,12 @@ class CardinalitySet:
                 self.ALL_ENTITIES_NAME.add(leaf)
 
     @staticmethod
-    def is_multi2multi(e: CardinalityItem):
-        return e.type == "multi2multi"
+    def is_many2many(e: CardinalityItem):
+        return e.type == "many2many"
 
     @staticmethod
-    def is_one2multi(e: CardinalityItem):
-        return e.type == "one2multi"
+    def is_one2many(e: CardinalityItem):
+        return e.type == "one2many"
 
     @staticmethod
     def is_one2one(e: CardinalityItem):
@@ -129,22 +129,22 @@ class CardinalitySet:
                 found.append(citem)
         return found
 
-    def get_multi2multi_all(self):
-        return list(filter(self.is_multi2multi, list(self.cardinalities)))
+    def get_many2many_all(self):
+        return list(filter(self.is_many2many, list(self.cardinalities)))
 
-    def get_one2multi_all(self):
-        return list(filter(self.is_one2multi, list(self.cardinalities)))
+    def get_one2many_all(self):
+        return list(filter(self.is_one2many, list(self.cardinalities)))
 
     def get_one2one_all(self):
         return list(filter(self.is_one2one, list(self.cardinalities)))
 
-    def get_multi2multi_by_entity_name(self, entity_name):
+    def get_many2many_by_entity_name(self, entity_name):
         cset = self.find_by_entity_name(entity_name)
-        return list(filter(self.is_multi2multi, cset))
+        return list(filter(self.is_many2many, cset))
 
-    def get_one2multi_by_entity_name(self, entity_name):
+    def get_one2many_by_entity_name(self, entity_name):
         cset = self.find_by_entity_name(entity_name)
-        return list(filter(self.is_one2multi, cset))
+        return list(filter(self.is_one2many, cset))
 
     def get_one2one_by_entity_name(self, entity_name):
         cset = self.find_by_entity_name(entity_name)
