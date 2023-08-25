@@ -81,9 +81,11 @@ class Comic(models.Model):
         auto_now_add=True
     )
     """series_id  """
-    series_id = models.PositiveIntegerField(
+    series_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """title 各巻タイトル 例：ざつ旅-That's Journey- 1"""
     title = models.CharField(
@@ -109,9 +111,11 @@ class Web_comic(models.Model):
         blank=True
     )
     """magazine_id  """
-    magazine_id = models.PositiveIntegerField(
+    magazine_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """memo  """
     memo = models.CharField(
@@ -136,9 +140,11 @@ class Web_comic(models.Model):
         blank=True
     )
     """story_id  """
-    story_id = models.PositiveIntegerField(
+    story_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """title 各話の名前 """
     title = models.CharField(
@@ -163,11 +169,6 @@ class Magazine(models.Model):
         verbose_name="発売日",
         auto_now_add=True
     )
-    """story_id  """
-    story_id = models.PositiveIntegerField(
-        verbose_name="",
-        blank=True
-    )
     """title タイトル 雑誌のタイトル 例：電撃マオウ 2020年1月号"""
     title = models.CharField(
         verbose_name="タイトル",
@@ -181,9 +182,10 @@ class Fragment(models.Model):
     """
 
     """character_id  """
-    character_id = models.PositiveIntegerField(
+    character_id = models.ManyToManyField(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
     )
     """memo  """
     memo = models.CharField(
@@ -192,14 +194,18 @@ class Fragment(models.Model):
         blank=True
     )
     """place_id  """
-    place_id = models.PositiveIntegerField(
+    place_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """story_id  """
-    story_id = models.PositiveIntegerField(
+    story_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """title  """
     title = models.CharField(
@@ -214,9 +220,11 @@ class Fragment(models.Model):
         blank=True
     )
     """web_comic_id  web_comic"""
-    web_comic_id = models.PositiveIntegerField(
+    web_comic_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
 
 
@@ -248,9 +256,11 @@ class Story(models.Model):
     """
 
     """camera_center_place_id  place このストーリーに登場する主な地点をすべて包含するような範囲（四角形）の中心"""
-    camera_center_place_id = models.PositiveIntegerField(
+    camera_center_place_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """camera_zoom_level  """
     camera_zoom_level = models.PositiveIntegerField(
@@ -258,14 +268,25 @@ class Story(models.Model):
         blank=True
     )
     """comic_id  """
-    comic_id = models.PositiveIntegerField(
+    comic_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """journey_id  """
-    journey_id = models.PositiveIntegerField(
+    journey_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
+    )
+    """magazine_id  """
+    magazine_id = models.OneToOneField(
+        "",
+        verbose_name="",
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """subtitle  """
     subtitle = models.CharField(
@@ -285,16 +306,29 @@ class Venue(models.Model):
     """  venue 目的地 会津、松島、那須、…
     """
 
-    """journey_id  """
-    journey_id = models.PositiveIntegerField(
+    """comic_id  """
+    comic_id = models.ManyToManyField(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+    )
+    """journey_id  """
+    journey_id = models.ManyToManyField(
+        "",
+        verbose_name="",
+        related_name="",
     )
     """name  """
     name = models.CharField(
         verbose_name="",
         max_length=255,
         blank=True
+    )
+    """story_id  """
+    story_id = models.ManyToManyField(
+        "",
+        verbose_name="",
+        related_name="",
     )
 
 
@@ -307,6 +341,12 @@ class Place(models.Model):
         verbose_name="",
         max_length=255,
         blank=True
+    )
+    """character_id  """
+    character_id = models.ManyToManyField(
+        "",
+        verbose_name="",
+        related_name="",
     )
     """latitude  """
     latitude = models.CharField(
@@ -326,10 +366,18 @@ class Place(models.Model):
         max_length=255,
         blank=True
     )
-    """venue_id  """
-    venue_id = models.PositiveIntegerField(
+    """story_id  """
+    story_id = models.ManyToManyField(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+    )
+    """venue_id  """
+    venue_id = models.ForeignKey(
+        "",
+        verbose_name="",
+        related_name="",
+        on_delete=models.CASCADE,
     )
 
 
@@ -342,6 +390,18 @@ class Route(models.Model):
         verbose_name="",
         max_length=255,
         blank=True
+    )
+    """place_id  """
+    place_id = models.ManyToManyField(
+        "",
+        verbose_name="",
+        related_name="",
+    )
+    """story_id  """
+    story_id = models.ManyToManyField(
+        "",
+        verbose_name="",
+        related_name="",
     )
 
 
@@ -361,6 +421,12 @@ class Character(models.Model):
         max_length=255,
         blank=True
     )
+    """story_id  """
+    story_id = models.ManyToManyField(
+        "",
+        verbose_name="",
+        related_name="",
+    )
     """type  """
     type = models.CharField(
         verbose_name="",
@@ -373,6 +439,12 @@ class Scene(models.Model):
     """  scene シーン 名シーン、ざつ旅ARのマーカー
     """
 
+    """character_id  """
+    character_id = models.ManyToManyField(
+        "",
+        verbose_name="",
+        related_name="",
+    )
     """memo  """
     memo = models.CharField(
         verbose_name="",
@@ -380,19 +452,25 @@ class Scene(models.Model):
         blank=True
     )
     """place_id  """
-    place_id = models.PositiveIntegerField(
+    place_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """story_id  """
-    story_id = models.PositiveIntegerField(
+    story_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """venue_id  """
-    venue_id = models.PositiveIntegerField(
+    venue_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
 
 
@@ -406,9 +484,11 @@ class Photo(models.Model):
         blank=True
     )
     """place_id  """
-    place_id = models.PositiveIntegerField(
+    place_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """url  """
     url = models.CharField(
@@ -417,9 +497,11 @@ class Photo(models.Model):
         blank=True
     )
     """user_id  """
-    user_id = models.PositiveIntegerField(
+    user_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """width  """
     width = models.PositiveIntegerField(
@@ -439,9 +521,11 @@ class Tweet(models.Model):
         blank=True
     )
     """place_id  """
-    place_id = models.PositiveIntegerField(
+    place_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
     """type  """
     type = models.PositiveIntegerField(
@@ -455,9 +539,11 @@ class Tweet(models.Model):
         blank=True
     )
     """user_id  """
-    user_id = models.PositiveIntegerField(
+    user_id = models.ForeignKey(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
+        on_delete=models.CASCADE,
     )
 
 
@@ -466,9 +552,10 @@ class User(models.Model):
     """
 
     """group_id  """
-    group_id = models.PositiveIntegerField(
+    group_id = models.ManyToManyField(
+        "",
         verbose_name="",
-        blank=True
+        related_name="",
     )
     """memo  """
     memo = models.CharField(
