@@ -2,7 +2,7 @@ class Entity:
     """
     ER図におけるエンティティ（※テーブル）1つを表す
 
-    props_keys<tuple>: クラス定数。各プロパティが持つ属性
+    PROP_KEYS<tuple>: クラス定数。各プロパティが持つ属性
         name<str>: カラム名（英数字）
         verbose<str>: カラム名の、分かりやすい表示名
         description<str>: カラムのメモ（アノテーション）
@@ -21,7 +21,7 @@ class Entity:
         ※カラムの数だけset_props()繰り返す
     """
 
-    props_keys = (
+    PROP_KEYS = (
         "name",
         "type",
         "isPK",
@@ -102,7 +102,7 @@ class Entity:
         """
         set_props カラムの定義を追加する
 
-        引数: props_keysの各要素をキーにした、名前付き引数
+        引数: PROP_KEYSの各要素をキーにした、名前付き引数
 
         Raises
         ------
@@ -110,7 +110,7 @@ class Entity:
             必須の引数 name がない
         """
         prop = {}
-        for key in Entity.props_keys:
+        for key in Entity.PROP_KEYS:
             if key in kwargs:
                 prop[key] = kwargs[key]
 
