@@ -124,7 +124,7 @@ class {}(models.Model):
         # self.cardinality_map = self.cardinality_set.get_map()
         one2one = self.cardinality_set.get_one2one_by_entity_name(entity_name)
         m2m = self.cardinality_set.get_many2many_by_entity_name(entity_name)
-        one2m = self.cardinality_set.get_one2multi_by_entity_name(entity_name)
+        one2m = self.cardinality_set.get_one2many_by_entity_name(entity_name)
 
         buf = self.get_entity_header()
         for i in self.entity.get_prop_names():
