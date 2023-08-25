@@ -95,8 +95,8 @@ class RenderDjangoModel(AbstractRender):
             data[prop_name] = {}
 
             for citem in cset:
-                c_table_name = citem.leaf[0]
-                c_forein_table = citem.leaf[1]
+                c_table_name = citem.leaf[1]
+                c_forein_table = citem.leaf[0]
                 if table_name != c_table_name:
                     # print("##### T", citem.leaf, citem.type)
                     continue
@@ -150,8 +150,8 @@ class RenderDjangoModel(AbstractRender):
             desc = name
         return """
 
-class {mark}(models.Model):
-    {name} {description}
+class {name}(models.Model):
+    {mark} {description}
     {mark}
 """.format(
             name=name.capitalize(),
