@@ -1,3 +1,3 @@
 [flake8]
-ignore=E402, D203
+ignore=E402, D203, W503
 max-line-length=100
