@@ -95,8 +95,8 @@ comic {
 
 %% place 場所 例:東京タワー、等
 place {
+    id serial PK
     %% comic コミックに登場する場所
-    %% コミックに登場する場所
     comic_id int FK
     name text
     latitude text
