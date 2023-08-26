@@ -36,7 +36,7 @@ class RenderDjangoModel(AbstractRender):
     {name} = models.ForeignKey(
         "{relation}",
         verbose_name="{verbose}",
-        related_name="{rel}",
+        related_name="{relname}",
         on_delete=models.{delete},
     )""",
         "one2one": """
@@ -44,7 +44,7 @@ class RenderDjangoModel(AbstractRender):
     {name} = models.OneToOneField(
         "{relation}",
         verbose_name="{verbose}",
-        related_name="{rel}",
+        related_name="{relname}",
         on_delete=models.{delete},
     )""",
         "many2many": """
@@ -52,10 +52,11 @@ class RenderDjangoModel(AbstractRender):
     {name} = models.ManyToManyField(
         "{relation}",
         verbose_name="{verbose}",
-        related_name="{rel}",
+        related_name="{relname}",
     )""",
     }
     MODULE_HEADER = "from django.db import models"
+    # null=True, blank=True, default=''
 
     def __init__(self, entity: Entity, cardinality_set: CardinalitySet):
         self.entity = entity
@@ -69,6 +70,7 @@ class RenderDjangoModel(AbstractRender):
         cset = self.cardinality_set.find_by_entity_name(table_name)
 
         for prop_name in self.entity.get_prop_names():
+            data[prop_name] = {}
             prop = self.entity.get_prop(prop_name)
             pieces = prop_name.split("_")
             pieces_len = len(pieces)
@@ -87,8 +89,7 @@ class RenderDjangoModel(AbstractRender):
                 )
                 continue
 
-            # print("scm p    ", prop["name"], table_name, e_forein_table)
-            data[prop_name] = {}
+            print("scm p    ", prop["name"], table_name, e_forein_table)
 
             for citem in cset:
                 c_table_name = citem.leaf[1]
@@ -103,20 +104,28 @@ class RenderDjangoModel(AbstractRender):
                     # print("##### Ty", prop["type"], citem.type)
                     continue
 
-                # print(citem)
-                # print(
-                #     "     #$",
-                #     table_name,
-                #     c_table_name,
-                #     e_forein_table,
-                #     c_forein_table,
-                #     prop["type"],
-                #     citem.type,
-                # )
+                self.cardinality_map[table_name][prop_name] = {
+                    "type": citem.type,
+                    "forein_table": e_forein_table,
+                }
+                print(
+                    "     #$",
+                    table_name,
+                    e_forein_table,
+                    citem.type,
+                    citem.description,
+                    prop,
+                )
+
+    def get_relation(self, table_name, prop_name):
+        return self.cardinality_map[table_name][prop_name]
 
     def get_property(self, name):
+        table_name = self.entity.get_name()
         property = self.entity.get_prop(name)
-        type = property["type"]
+        relation = self.get_relation(table_name, name)
+        type = relation["type"]
+
         temp = RenderDjangoModel.TYPE2FIELD[type]
         if type in (
             "int",
@@ -143,8 +152,8 @@ class RenderDjangoModel(AbstractRender):
                 mark='"""',
                 quote='"',
                 delete="CASCADE",
-                relation="",
-                rel="",
+                relation=relation["forein_table"].capitalize(),
+                relname=table_name,
             )
         else:
             line = ""
