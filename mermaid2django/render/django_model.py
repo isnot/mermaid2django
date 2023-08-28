@@ -29,27 +29,27 @@ class RenderDjangoModel(AbstractRender):
         self.relationship_map[table_name] = {}
         cset = self.relationship_set.find_by_entity_name(table_name)
 
-        for prop_name in self.entity.get_prop_names():
-            self.relationship_map[table_name][prop_name] = {}
-            prop = self.entity.get_prop(prop_name)
-            pieces = prop_name.split("_")
+        for attribute_name in self.entity.get_attribute_names():
+            self.relationship_map[table_name][attribute_name] = {}
+            attribute = self.entity.get_attribute(attribute_name)
+            pieces = attribute_name.split("_")
             pieces_len = len(pieces)
 
-            if not prop["isFK"]:
+            if not attribute["isFK"]:
                 continue
-            if prop["description"] is not None and prop["description"] != "":
+            if attribute["description"] is not None and attribute["description"] != "":
                 # original named FK
-                e_forein_table = prop["description"].split(" ")[0]
+                e_forein_table = attribute["description"].split(" ")[0]
             elif pieces_len == 2 and pieces[1] == "id":
                 # simple FK
                 e_forein_table = pieces[0]
             else:
                 raise RuntimeError(
-                    "forein table name is not found, but also property was FK"
+                    "forein table name is not found, but also attribute was FK"
                 )
                 continue
 
-            # print("#scm p    ", table_name, prop_name, e_forein_table)
+            # print("#scm p    ", table_name, attribute_name, e_forein_table)
             for citem in cset:
                 c_table_name = citem.leaf[1]
                 c_forein_table = citem.leaf[0]
@@ -57,9 +57,9 @@ class RenderDjangoModel(AbstractRender):
                     continue
                 if e_forein_table != c_forein_table:
                     continue
-                if len(citem.attribute_name) > 0 and citem.attribute_name != prop_name:
+                if len(citem.attribute_name) > 0 and citem.attribute_name != attribute_name:
                     continue
-                self.relationship_map[table_name][prop_name] = {
+                self.relationship_map[table_name][attribute_name] = {
                     "type": citem.type,
                     "forein_table": c_forein_table,
                 }
@@ -69,7 +69,7 @@ class RenderDjangoModel(AbstractRender):
                     table_name,
                     e_forein_table,
                     citem.type,
-                    prop["description"],
+                    attribute["description"],
                     citem.description,
                     citem.annotation,
                 )
@@ -80,13 +80,13 @@ class RenderDjangoModel(AbstractRender):
         {options}verbose_name="{verbose}",
     )"""
 
-    def get_relation(self, table_name, prop_name):
-        return self.relationship_map[table_name][prop_name]
+    def get_relation(self, table_name, attribute_name):
+        return self.relationship_map[table_name][attribute_name]
 
-    def get_property(self, name):
+    def get_attribute(self, name):
         table_name = self.entity.get_name()
-        property = self.entity.get_prop(name)
-        type = property["type"]
+        attribute = self.entity.get_attribute(name)
+        type = attribute["type"]
         if type == "rel":
             relation = self.get_relation(table_name, name)
 
@@ -97,9 +97,9 @@ class RenderDjangoModel(AbstractRender):
             line = ""
         elif type == "rel":
             line = temp.format(
-                name=property["name"],
-                verbose=property["verbose"],
-                description=property["description"],
+                name=attribute["name"],
+                verbose=attribute["verbose"],
+                description=attribute["description"],
                 mark='"""',
                 quote='"',
                 delete="CASCADE",
@@ -108,9 +108,9 @@ class RenderDjangoModel(AbstractRender):
             )
         else:
             line = temp.format(
-                name=property["name"],
-                verbose=property["verbose"],
-                description=property["description"],
+                name=attribute["name"],
+                verbose=attribute["verbose"],
+                description=attribute["description"],
                 mark='"""',
                 quote='"',
             )
@@ -149,11 +149,11 @@ class {name}(models.Model):
         one2m = self.relationship_set.get_one2many_by_entity_name(entity_name)
 
         buf = self.get_entity_header()
-        for i in self.entity.get_prop_names():
-            prop = self.get_property(i)
-            if prop == "":
+        for i in self.entity.get_attribute_names():
+            attribute = self.get_attribute(i)
+            if attribute == "":
                 continue
-            buf += prop
+            buf += attribute
 
         # for xxx in m2m:
         # print(xxx)
