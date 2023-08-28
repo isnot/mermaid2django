@@ -9,9 +9,9 @@ print(RenderDjangoModel.MODULE_HEADER)
 
 for entity in entities:
     name = entity.get_name()
-    render = RenderDjangoModel(entity, task.get_cardinality_set())
+    render = RenderDjangoModel(entity, task.get_relationship_set())
     entitiy_renders[name] = render
-    cmap[name] = render.setup_cardinality_map()
+    cmap[name] = render.setup_relationship_map()
 
 for entity in entities:
     name = entity.get_name()

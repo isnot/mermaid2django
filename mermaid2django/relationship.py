@@ -1,4 +1,4 @@
-class CardinalityExpression:
+class RelationshipExpression:
     def __init__(self, piece=""):
         if len(piece) != 6:
             raise TypeError("missmatch")
@@ -43,7 +43,7 @@ class CardinalityExpression:
         )
 
 
-class CardinalityItem:
+class RelationshipItem:
     def __init__(self, items=[]):
         (
             left,
@@ -58,7 +58,7 @@ class CardinalityItem:
             right,
         )
         self.type = ""
-        self.expression = CardinalityExpression(expression)
+        self.expression = RelationshipExpression(expression)
         self.description = memo.strip('"')
 
     def parse(self):
@@ -86,7 +86,7 @@ class CardinalityItem:
         return "{} {} {}".format(self.leaf[0], self.leaf[1], self.type)
 
 
-class CardinalitySet:
+class RelationshipSet:
     ALL_ENTITIES_NAME = set()
 
     def __init__(self, all=[]):
@@ -96,15 +96,15 @@ class CardinalitySet:
             self.ALL_ENTITIES_NAME.add(items.leaf[1])
 
     @staticmethod
-    def is_many2many(e: CardinalityItem):
+    def is_many2many(e: RelationshipItem):
         return e.type == "many2many"
 
     @staticmethod
-    def is_one2many(e: CardinalityItem):
+    def is_one2many(e: RelationshipItem):
         return e.type == "one2many"
 
     @staticmethod
-    def is_one2one(e: CardinalityItem):
+    def is_one2one(e: RelationshipItem):
         return e.type == "one2one"
 
     def get_cardinalities(self):

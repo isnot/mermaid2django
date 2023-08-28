@@ -1,5 +1,5 @@
-from mermaid2django.cardinality import CardinalityItem, CardinalitySet
 from mermaid2django.entity import Entity
+from mermaid2django.relationship import RelationshipItem, RelationshipSet
 from mermaid2django.render.abstract import AbstractRender
 
 
@@ -58,16 +58,16 @@ class RenderDjangoModel(AbstractRender):
     MODULE_HEADER = "from django.db import models"
     # null=True, blank=True, default=''
 
-    def __init__(self, entity: Entity, cardinality_set: CardinalitySet):
+    def __init__(self, entity: Entity, relationship_set: RelationshipSet):
         self.entity = entity
-        self.cardinality_set = cardinality_set
-        self.cardinality_map = {}
+        self.relationship_set = relationship_set
+        self.relationship_map = {}
         self.index_def = []
 
-    def setup_cardinality_map(self):
+    def setup_relationship_map(self):
         table_name = self.entity.get_name()
         data = {}
-        cset = self.cardinality_set.find_by_entity_name(table_name)
+        cset = self.relationship_set.find_by_entity_name(table_name)
 
         for prop_name in self.entity.get_prop_names():
             data[prop_name] = {}
@@ -104,7 +104,7 @@ class RenderDjangoModel(AbstractRender):
                     # print("##### Ty", prop["type"], citem.type)
                     continue
 
-                self.cardinality_map[table_name][prop_name] = {
+                self.relationship_map[table_name][prop_name] = {
                     "type": citem.type,
                     "forein_table": e_forein_table,
                 }
@@ -118,7 +118,7 @@ class RenderDjangoModel(AbstractRender):
                 )
 
     def get_relation(self, table_name, prop_name):
-        return self.cardinality_map[table_name][prop_name]
+        return self.relationship_map[table_name][prop_name]
 
     def get_property(self, name):
         table_name = self.entity.get_name()
@@ -183,13 +183,13 @@ class {name}(models.Model):
 
     def get_model(self, cmap={}):
         entity_name = self.entity.get_name()
-        if self.cardinality_set.is_link_table(entity_name):
+        if self.relationship_set.is_link_table(entity_name):
             return None
 
-        # self.cardinality_map = self.cardinality_set.get_map()
-        one2one = self.cardinality_set.get_one2one_by_entity_name(entity_name)
-        m2m = self.cardinality_set.get_many2many_by_entity_name(entity_name)
-        one2m = self.cardinality_set.get_one2many_by_entity_name(entity_name)
+        # self.relationship_map = self.relationship_set.get_map()
+        one2one = self.relationship_set.get_one2one_by_entity_name(entity_name)
+        m2m = self.relationship_set.get_many2many_by_entity_name(entity_name)
+        one2m = self.relationship_set.get_one2many_by_entity_name(entity_name)
 
         buf = self.get_entity_header()
         for i in self.entity.get_prop_names():

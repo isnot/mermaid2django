@@ -1,5 +1,5 @@
-from mermaid2django.cardinality import CardinalityItem, CardinalitySet
 from mermaid2django.entity import Entity
+from mermaid2django.relationship import RelationshipItem, RelationshipSet
 
 
 class ParseMermaidErDiagram:
@@ -30,7 +30,7 @@ class ParseMermaidErDiagram:
             "split": {"sep": " ", "max": 2},
         },
         {
-            "type": "cardinality",
+            "type": "relationship",
             "command": "contains",
             "mark": "--",
             "split": {"sep": " ", "max": 4},
@@ -44,7 +44,7 @@ class ParseMermaidErDiagram:
     def __init__(self, *args, **kwargs):
         self.entities = {}
         self.cardinalities = []
-        self.cardinality_set = None  # CardinalitySet
+        self.relationship_set = None  # RelationshipSet
         self.input_filename = "mermaid.mmd"
         if "input_filename" in kwargs:
             self.input_filename = kwargs["input_filename"]
@@ -68,8 +68,8 @@ class ParseMermaidErDiagram:
     def get_entities(self):
         return self.entities.values()
 
-    def get_cardinality_set(self):
-        return self.cardinality_set
+    def get_relationship_set(self):
+        return self.relationship_set
 
     def get_current_entity(self):
         if self.__now_entity_name != "":
@@ -129,7 +129,7 @@ class ParseMermaidErDiagram:
         pass
 
     def on_finish(self):
-        self.cardinality_set = CardinalitySet(self.cardinalities)
+        self.relationship_set = RelationshipSet(self.cardinalities)
 
     def on_comment(self, line=[]):
         self.__last_comment += line[0].lstrip("%")
@@ -172,8 +172,8 @@ class ParseMermaidErDiagram:
         )
         self.__last_comment = ""
 
-    def on_cardinality(self, items=[]):
-        cad = CardinalityItem(items)
+    def on_relationship(self, items=[]):
+        cad = RelationshipItem(items)
         cad.parse()
         self.cardinalities.append(cad)
 
