@@ -1,12 +1,12 @@
 from mermaid2django.parser import ParseMermaidErDiagram
 from mermaid2django.render.django_model import RenderDjangoModel
 
-task = ParseMermaidErDiagram("./examples/plan.mmd")
-entities = task.parse()
-cmap = {}
-entitiy_renders = {}
 print(RenderDjangoModel.MODULE_HEADER)
 
+task = ParseMermaidErDiagram("./examples/plan.mmd")
+entities = task.parse()
+entitiy_renders = {}
+cmap = {}
 for entity in entities:
     name = entity.get_name()
     render = RenderDjangoModel(entity, task.get_relationship_set())

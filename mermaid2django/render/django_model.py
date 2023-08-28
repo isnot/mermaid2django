@@ -1,19 +1,20 @@
 from mermaid2django.entity import Entity
-from mermaid2django.relationship import RelationshipItem, RelationshipSet
+from mermaid2django.relationship import RelationshipSet  # RelationshipItem
 from mermaid2django.render.abstract import AbstractRender
 
 
 class RenderDjangoModel(AbstractRender):
     FIELD_OPTIONS = {
-        "int": "blank=True,",
-        "char": "max_length=255, blank=True,",
-        "text": "blank=True,",
-        "url": "blank=True,",
-        "date": "auto_now_add=True,",
-        "datetime": "auto_now_add=True,",
-        "rel": ' "{relation}", related_name="{relname}",',
-        "one2many": "on_delete=models.CASCADE,",
-        "one2one": "on_delete=models.CASCADE,",
+        "int": "blank=True, ",
+        "char": "max_length=255, blank=True, ",
+        "text": "blank=True, ",
+        "url": "blank=True, ",
+        "date": "auto_now_add=True, ",
+        "datetime": "auto_now_add=True, ",
+        "rel": '"{relation}", related_name="{relname}", ',
+        "one2many": "on_delete=models.CASCADE, ",
+        "one2one": "on_delete=models.CASCADE, ",
+        "many2many": "",
     }
     MODULE_HEADER = "from django.db import models"
     # null=True, blank=True, default=''
@@ -57,28 +58,39 @@ class RenderDjangoModel(AbstractRender):
                     continue
                 if e_forein_table != c_forein_table:
                     continue
-                if len(citem.attribute_name) > 0 and citem.attribute_name != attribute_name:
+                if (
+                    len(citem.attribute_name) > 0
+                    and citem.attribute_name != attribute_name
+                ):
                     continue
                 self.relationship_map[table_name][attribute_name] = {
                     "type": citem.type,
                     "forein_table": c_forein_table,
                 }
 
-                print(
-                    "     #$",
-                    table_name,
-                    e_forein_table,
-                    citem.type,
-                    attribute["description"],
-                    citem.description,
-                    citem.annotation,
-                )
+                # print(
+                #     "# $",
+                #     table_name,
+                #     e_forein_table,
+                #     attribute["description"],
+                #     citem.description,
+                #     citem.annotation,
+                # )
 
-    def get_template(self):
-        return """{mark}{name} {verbose} {description}{mark}
+    def get_template(self, attribute_type="", relation_type=""):
+        options = RenderDjangoModel.FIELD_OPTIONS[attribute_type]
+        if attribute_type == "rel":
+            options = f"{options}\n    {RenderDjangoModel.FIELD_OPTIONS[relation_type]}"
+        template = (
+            """    {mark}{name} {verbose} {description}{mark}
     {name} = models.{model_type}(
-        {options}verbose_name="{verbose}",
-    )"""
+        """
+            + options
+            + """verbose_name="{verbose}",
+    )
+"""
+        )
+        return template
 
     def get_relation(self, table_name, attribute_name):
         return self.relationship_map[table_name][attribute_name]
@@ -87,32 +99,44 @@ class RenderDjangoModel(AbstractRender):
         table_name = self.entity.get_name()
         attribute = self.entity.get_attribute(name)
         type = attribute["type"]
-        if type == "rel":
-            relation = self.get_relation(table_name, name)
-
-        # print(self.relationship_map["series"]["title"])
-        temp = self.get_template()
-        options = RenderDjangoModel.FIELD_OPTIONS[type]
-        if type not in Entity.VALID_TYPES:
-            line = ""
+        if type not in Entity.VALID_TYPES or type == "serial":
+            return ""
         elif type == "rel":
+            relation = self.get_relation(table_name, name)
+            temp = self.get_template(
+                attribute_type=type, relation_type=relation["type"]
+            )
+            if relation["type"] == "one2one":
+                model_type = "OneToOneField"
+            elif relation["type"] == "many2many":
+                model_type = "ManyToManyField"
+            elif relation["type"] == "one2many":
+                model_type = "ForeignKey"
+            else:
+                model_type = "Error"
             line = temp.format(
                 name=attribute["name"],
                 verbose=attribute["verbose"],
                 description=attribute["description"],
-                mark='"""',
-                quote='"',
-                delete="CASCADE",
+                model_type=model_type,
                 relation=relation["forein_table"].capitalize(),
                 relname=table_name,
+                mark='"""',
             )
         else:
+            temp = self.get_template(attribute_type=type)
+            if type == "int":
+                model_type = "PositiveIntegerField"
+            elif type == "url":
+                model_type = "URLField"
+            else:
+                model_type = type.capitalize() + "Field"
             line = temp.format(
                 name=attribute["name"],
                 verbose=attribute["verbose"],
                 description=attribute["description"],
+                model_type=model_type,
                 mark='"""',
-                quote='"',
             )
         return line
 
@@ -122,7 +146,6 @@ class RenderDjangoModel(AbstractRender):
         if desc is None or desc == "":
             desc = name
         return """
-
 class {name}(models.Model):
     {mark} {description}
     {mark}
@@ -144,9 +167,9 @@ class {name}(models.Model):
             return None
 
         # self.relationship_map = self.relationship_set.get_map()
-        one2one = self.relationship_set.get_one2one_by_entity_name(entity_name)
-        m2m = self.relationship_set.get_many2many_by_entity_name(entity_name)
-        one2m = self.relationship_set.get_one2many_by_entity_name(entity_name)
+        # one2one = self.relationship_set.get_one2one_by_entity_name(entity_name)
+        # m2m = self.relationship_set.get_many2many_by_entity_name(entity_name)
+        # one2m = self.relationship_set.get_one2many_by_entity_name(entity_name)
 
         buf = self.get_entity_header()
         for i in self.entity.get_attribute_names():
