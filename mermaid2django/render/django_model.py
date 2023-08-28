@@ -5,15 +5,15 @@ from mermaid2django.render.abstract import AbstractRender
 
 class RenderDjangoModel(AbstractRender):
     FIELD_OPTIONS = {
-        "int": "blank=True, ",
-        "char": "max_length=255, blank=True, ",
-        "text": "blank=True, ",
-        "url": "blank=True, ",
-        "date": "auto_now_add=True, ",
-        "datetime": "auto_now_add=True, ",
-        "rel": '"{relation}", related_name="{relname}", ',
-        "one2many": "on_delete=models.CASCADE, ",
-        "one2one": "on_delete=models.CASCADE, ",
+        "int": 'verbose_name="{verbose}", blank=True, ',
+        "char": 'verbose_name="{verbose}", max_length=255, blank=True, ',
+        "text": 'verbose_name="{verbose}", blank=True, ',
+        "url": 'verbose_name="{verbose}", blank=True, ',
+        "date": 'verbose_name="{verbose}", auto_now_add=True, ',
+        "datetime": 'verbose_name="{verbose}", auto_now_add=True, ',
+        "rel": '"{relation}", verbose_name="{verbose}", related_name="{relname}", ',
+        "one2many": "    on_delete=models.CASCADE, ",
+        "one2one": "    on_delete=models.CASCADE, ",
         "many2many": "",
     }
     MODULE_HEADER = "from django.db import models"
@@ -86,7 +86,7 @@ class RenderDjangoModel(AbstractRender):
     {name} = models.{model_type}(
         """
             + options
-            + """verbose_name="{verbose}",
+            + """
     )
 """
         )
@@ -146,6 +146,7 @@ class RenderDjangoModel(AbstractRender):
         if desc is None or desc == "":
             desc = name
         return """
+
 class {name}(models.Model):
     {mark} {description}
     {mark}
@@ -181,4 +182,4 @@ class {name}(models.Model):
         # for xxx in m2m:
         # print(xxx)
 
-        return buf
+        return buf + "\n"
