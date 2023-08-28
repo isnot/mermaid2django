@@ -1,4 +1,5 @@
 # mermaid2django
+
  entity-relationship Diagram that is written with mermaid's syntax convert into Django model class
 
 WARNINGS; Work In Progress
@@ -6,6 +7,7 @@ WARNINGS; Work In Progress
 ***作りかけ注意***
 
 ## 概要
+
 Mermaid記法で書いたER図を元にして、Django向けのコードに変換します。
 
 まずModelクラスつまりmodels.pyの作成をサポートし、次にadmin.pyも生成できるようにします。
@@ -15,14 +17,13 @@ Mermaid記法で書いたER図を元にして、Django向けのコードに変�
 ですから、本件アプリケーションは「当初の設計・検討段階においてER図を用いて、そこからmodels.pyを得る」部分にフォーカスします。
 一度models.pyが出来上がったら、以降はmodels.pyを正本として使って行くことを前提とします。
 
-
-## まだ作りかけです。
+## まだ作りかけです
 
 当初の目標とする機能の半分以下程度のレベル感です。
 
 ToDo
 カーディナリティのパーズ,多対多モデルへの戦略
-    カラム名⇒FKの場合、リレーションを書き出す
+    アトリビュート⇒FKの場合、リレーションを書き出す
 
 admin.py生成
 
@@ -43,7 +44,8 @@ int, text, date, datetime, serial
 
 serialはシリアル型のPKのみ
 intは
-textはVarchar
+textは
+char
 
 細かいオプション指定は対応してません。
 生成されたmodels.pyを適宜書き換えてください。
@@ -70,7 +72,7 @@ textはVarchar
 
 プロパティのアノテーションのうち、そのプロパティがリレーションを持つ場合、リレーション先のエンティティ名を
 アノテーションの冒頭に記述します。
-テーブル名の後にコメント等を続けて記述する場合は、空白文字で区切ります。
+エンティティ名称の後にコメント等を続けて記述する場合は、空白文字で区切ります。
 
 ### 記述例
 
@@ -81,26 +83,26 @@ erDiagram
 
 %% comic コミック単行本 1巻、2巻、…
 comic {
-    id serial PK
+    serial id PK
     %% 第n巻
-    number int
+    int number
     %% 例：ざつ旅-That's Journey- 1
-    title text "各巻タイトル"
+    char title "各巻タイトル"
     %% 巻末の奥付にある、初版発行日
-    issued date "発行日"
+    date issued "発行日"
     %% 版元ドットコムの書誌情報DBより
-    cover_image_url text "書影url"
-    isbn text "ISBN13"
+    url cover_image_url "書影url"
+    char isbn "ISBN13"
 }
 
 %% place 場所 例:東京タワー、等
 place {
-    id serial PK
-    %% comic コミックに登場する場所
-    comic_id int FK
-    name text
-    latitude text
-    longitude text
-    altitude text
+    serial id PK
+    %% comic place コミックに登場する場所
+    rel comic_id FK
+    char name
+    char latitude
+    char longitude
+    char altitude
 }
 ```
