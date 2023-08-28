@@ -101,119 +101,142 @@ fragment {
     %% web_comic fragment one2many
     rel web_comic_id FK
     %% character fragment many2many
-    character FK
+    rel character FK
     %% place fragment one2many
-    place_id FK
-    title text
-    url text ""
-    memo text
+    rel place_id FK
+    char title
+    url url
+    text memo
 }
 
 %% journey 第〇旅、番外旅
 journey {
     serial id PK
-    key text
+    char key
     %% 1:本編 2:番外旅 9:その他
-    type int "タイプ"
-    memo text
+    int type "タイプ"
+    text memo
 }
 
 %% story 単行本の単話 第〇旅前編、第〇旅後編。コミック未収録もある
 story {
     serial id PK
-    magazine_id one2one FK
-    comic_id one2many FK
-    journey_id one2many FK
-    title text
-    subtitle text
-    %% place このストーリーに登場する主な地点をすべて包含するような範囲（四角形）の中心
-    camera_center_place_id one2many FK
-    camera_zoom_level int
+    %% magazine story one2one
+    rel magazine_id FK
+    %% comic story one2many
+    rel comic_id FK
+    %% journey story one2many
+    rel journey_id FK
+    char title
+    char subtitle
+    %% place story one2many このストーリーに登場する主な地点をすべて包含するような範囲（四角形）の中心
+    rel camera_center_place_id FK
+    int camera_zoom_level
 }
 
 %% venue 目的地 会津、松島、那須、…
 venue {
     serial id PK
-    journey_id many2many FK
-    story_id many2many FK
-    comic_id many2many FK
-    name text
+    %% journey venue many2many
+    rel journey_id FK
+    %% story venue many2many
+    rel story_id FK
+    %% comic venue many2many
+    rel comic_id FK
+    char name
 }
 
 %% place 場所 東京駅の顔出しパネル、登場店舗、宿泊場所、観光名所、施設、交通拠点
 place {
     serial id PK
-    venue_id one2many FK
-    story_id many2many FK
-    character_id many2many FK
-    name text
-    latitude text
-    longitude text
-    altitude text
+    %% venue place one2many
+    rel venue_id FK
+    %% story place many2many
+    rel story_id FK
+    %% character place many2many
+    rel character_id FK
+    char name
+    char latitude
+    char longitude
+    char altitude
+    text memo
 }
 
 %% route 経路 placeを組み合わせて経路とする
 route {
     serial id PK
-    story_id many2many FK
-    place_id many2many FK
-    name text
+    %% story route many2many
+    rel story_id FK
+    %% place route many2many
+    rel place_id FK
+    char name
+    text memo
 }
 
 %% character キャラクター 主要5人、編集部、他
 character {
     serial id PK
-    story_id many2many FK
-    name text
-    type text
-    description text
+    %% story character many2many
+    rel story_id FK
+    char name
+    char type
+    text description
 }
 
 %% scene シーン 名シーン、ざつ旅ARのマーカー
 scene {
     serial id PK
-    story_id one2many FK
-    venue_id one2many FK
-    place_id one2many FK
-    character_id many2many FK
-    memo text
+    %% story scene one2many
+    rel story_id FK
+    %% venue scene one2many
+    rel venue_id FK
+    %% place scene one2many
+    rel place_id FK
+    %% character scene many2many
+    rel character_id FK
+    text memo
 }
 
 %% photo flickr (google place photo api有料)
 photo {
     serial id PK
-    place_id one2many FK
-    user_id one2many FK
-    url text
-    width int
-    height int
+    %% place photo one2many
+    rel place_id FK
+    %% user photo one2many
+    rel user_id FK
+    url url
+    int width
+    int height
 }
 
 %% tweet Twitter 石坂さん、鈴ヶ森さん、読者等、無関係
 tweet {
     serial id PK
-    user_id one2many FK
-    place_id one2many FK
-    type int
-    url text
-    description text
+    %% user tweet one2many
+    rel user_id FK
+    %% place tweet one2many
+    rel place_id FK
+    int type
+    url url
+    text description
 }
 
 %% user ユーザー 利用者
 user {
     serial id PK
-    group_id many2many FK
-    name text
-    type int
-    memo text
+    %% group user many2many
+    rel group_id FK
+    char name
+    int type
+    text memo
 }
 
 %% group グループ
 group {
     serial id PK
-    name text
-    visibility int
-    memo text
+    char name
+    int visibility
+    text memo
 }
 
 %% role
