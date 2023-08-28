@@ -3,27 +3,27 @@ class Entity:
     ER図におけるエンティティ（※テーブル）1つを表す
 
     PROP_KEYS<tuple>: クラス定数。各プロパティが持つ属性
-        name<str>: カラム名（英数字）
-        verbose<str>: カラム名の、分かりやすい表示名
-        description<str>: カラムのメモ（アノテーション）
-        type<str>: カラムの型
+        type<str>: アトリビュート（※カラム）の型
+        name<str>: アトリビュート名称（英数字）
+        verbose<str>: アトリビュートの、分かりやすい表示名
+        description<str>: アトリビュートのメモ（アノテーション）
 
         usage: 使用例
         book = Entity("book", "蔵書目録")
         book.set_props(
+            type="char",
             name="title",
             verbose="タイトル",
             description="本のタイトルは、honto等の書誌情報で確認してから正式な名前をつける",
-            type="text",
             isPK=False,
             isFK=False,
         )
-        ※カラムの数だけset_props()繰り返す
+        ※アトリビュートの数だけset_props()繰り返す
     """
 
     PROP_KEYS = (
-        "name",
         "type",
+        "name",
         "isPK",
         "isFK",
         "verbose",
@@ -34,11 +34,10 @@ class Entity:
         "int",
         "char",
         "text",
+        "url",
         "date",
         "datetime",
-        "one2one",
-        "one2many",
-        "many2many",
+        "rel",
     )
 
     def __init__(self, *args):
@@ -46,9 +45,9 @@ class Entity:
         __init__ インスタンス生成
 
         インスタンス変数:
-        name<str>: テーブル名（英数字、命名規則による）
-        description<str>: テーブルの説明（アノテーション）
-        props<dict>: 全カラムの定義を格納する
+        name<str>: エンティティ名（英数字、命名規則による）
+        description<str>: エンティティの説明（アノテーション）
+        props<dict>: 全アトリビュートの定義を格納する
         index_def<dict>: インデックス（未実装）
 
         Raises
@@ -77,28 +76,28 @@ class Entity:
 
     def get_prop_names(self):
         """
-        get_prop_names カラム名のリストを得る
+        get_prop_names アトリビュートのリストを得る
 
         Returns
         -------
         <list<str>>
-            カラム名のリスト
+            アトリビュートのリスト
         """
         return sorted(self.props.keys())
 
     def get_prop(self, name):
         """
-        get_prop カラムの定義をひとつ得る
+        get_prop アトリビュートの定義をひとつ得る
 
         Parameters
         ----------
         name : <str>
-            カラム名
+            アトリビュート名称
 
         Returns
         -------
         <dict>
-            カラムの定義
+            アトリビュートの定義
 
         Raises
         ------
@@ -109,24 +108,27 @@ class Entity:
             return self.props[name]
         raise TypeError("unknown prop name")
 
-    def set_props(self, **kwargs):
+    def set_attributes(self, **kwargs):
         """
-        set_props カラムの定義を追加する
+        set_props アトリビュートの定義を追加する
 
         引数: PROP_KEYSの各要素をキーにした、名前付き引数
 
         Raises
         ------
         RuntimeError
-            必須の引数 name がない
+            必須の引数 type, name がない
         """
         prop = {}
         for key in Entity.PROP_KEYS:
             if key in kwargs:
                 prop[key] = kwargs[key]
 
-        if "name" not in prop:
-            raise RuntimeError("name of property is required")
+        if "type" not in prop or "name" not in prop:
+            raise RuntimeError("missing property of required")
+
+        if prop["type"] not in self.VALID_TYPES:
+            raise TypeError("invalid type at entity.attribute")
 
         if prop["name"] not in self.props:
             self.props[prop["name"]] = prop

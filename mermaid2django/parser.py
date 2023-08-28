@@ -43,7 +43,7 @@ class ParseMermaidErDiagram:
 
     def __init__(self, *args, **kwargs):
         self.entities = {}
-        self.cardinalities = []
+        self.relations = []
         self.relationship_set = None  # RelationshipSet
         self.input_filename = "mermaid.mmd"
         if "input_filename" in kwargs:
@@ -129,10 +129,10 @@ class ParseMermaidErDiagram:
         pass
 
     def on_finish(self):
-        self.relationship_set = RelationshipSet(self.cardinalities)
+        self.relationship_set = RelationshipSet(self.relations)
 
     def on_comment(self, line=[]):
-        self.__last_comment += line[0].lstrip("%")
+        self.__last_comment += line[0].lstrip("%").strip()
 
     def on_entity_start(self, line=[]):
         name = line[0].rstrip(" {")
@@ -162,9 +162,9 @@ class ParseMermaidErDiagram:
             isFK = False
         if verbose is None:
             verbose = ""
-        m.set_props(
-            name=line[0],
-            type=line[1],
+        m.set_attributes(
+            type=line[0],
+            name=line[1],
             isPK=isPK,
             isFK=isFK,
             verbose=verbose,
@@ -173,9 +173,10 @@ class ParseMermaidErDiagram:
         self.__last_comment = ""
 
     def on_relationship(self, items=[]):
-        cad = RelationshipItem(items)
+        cad = RelationshipItem(items, annotation=self.__last_comment)
         cad.parse()
-        self.cardinalities.append(cad)
+        self.relations.append(cad)
+        self.__last_comment = ""
 
     def on_blank_line(self, _):
         self.__last_comment = ""

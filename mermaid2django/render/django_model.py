@@ -4,56 +4,16 @@ from mermaid2django.render.abstract import AbstractRender
 
 
 class RenderDjangoModel(AbstractRender):
-    TYPE2FIELD = {
-        "serial": "",
-        "int": """
-    {mark}{name} {verbose} {description}{mark}
-    {name} = models.PositiveIntegerField(
-        verbose_name="{verbose}",
-        blank=True
-    )""",
-        "text": """
-    {mark}{name} {verbose} {description}{mark}
-    {name} = models.CharField(
-        verbose_name="{verbose}",
-        max_length=255,
-        blank=True
-    )""",
-        "date": """
-    {mark}{name} {verbose} {description}{mark}
-    {name} = models.DateField(
-        verbose_name="{verbose}",
-        auto_now_add=True
-    )""",
-        "datetime": """
-    {mark}{name} {verbose} {description}{mark}
-    {name} = models.DateTimeField(
-        verbose_name="{verbose}",
-        auto_now_add=True
-    )""",
-        "one2many": """
-    {mark}{name} {verbose} {description}{mark}
-    {name} = models.ForeignKey(
-        "{relation}",
-        verbose_name="{verbose}",
-        related_name="{relname}",
-        on_delete=models.{delete},
-    )""",
-        "one2one": """
-    {mark}{name} {verbose} {description}{mark}
-    {name} = models.OneToOneField(
-        "{relation}",
-        verbose_name="{verbose}",
-        related_name="{relname}",
-        on_delete=models.{delete},
-    )""",
-        "many2many": """
-    {mark}{name} {verbose} {description}{mark}
-    {name} = models.ManyToManyField(
-        "{relation}",
-        verbose_name="{verbose}",
-        related_name="{relname}",
-    )""",
+    FIELD_OPTIONS = {
+        "int": "blank=True,",
+        "char": "max_length=255, blank=True,",
+        "text": "blank=True,",
+        "url": "blank=True,",
+        "date": "auto_now_add=True,",
+        "datetime": "auto_now_add=True,",
+        "rel": ' "{relation}", related_name="{relname}",',
+        "one2many": "on_delete=models.CASCADE,",
+        "one2one": "on_delete=models.CASCADE,",
     }
     MODULE_HEADER = "from django.db import models"
     # null=True, blank=True, default=''
@@ -66,11 +26,11 @@ class RenderDjangoModel(AbstractRender):
 
     def setup_relationship_map(self):
         table_name = self.entity.get_name()
-        data = {}
+        self.relationship_map[table_name] = {}
         cset = self.relationship_set.find_by_entity_name(table_name)
 
         for prop_name in self.entity.get_prop_names():
-            data[prop_name] = {}
+            self.relationship_map[table_name][prop_name] = {}
             prop = self.entity.get_prop(prop_name)
             pieces = prop_name.split("_")
             pieces_len = len(pieces)
@@ -89,33 +49,36 @@ class RenderDjangoModel(AbstractRender):
                 )
                 continue
 
-            print("scm p    ", prop["name"], table_name, e_forein_table)
-
+            # print("#scm p    ", table_name, prop_name, e_forein_table)
             for citem in cset:
                 c_table_name = citem.leaf[1]
                 c_forein_table = citem.leaf[0]
                 if table_name != c_table_name:
-                    # print("##### Ta", table_name, c_table_name)
                     continue
                 if e_forein_table != c_forein_table:
-                    # print("##### Fo", e_forein_table, c_forein_table)
                     continue
-                if prop["type"] != citem.type:
-                    # print("##### Ty", prop["type"], citem.type)
+                if len(citem.attribute_name) > 0 and citem.attribute_name != prop_name:
                     continue
-
                 self.relationship_map[table_name][prop_name] = {
                     "type": citem.type,
-                    "forein_table": e_forein_table,
+                    "forein_table": c_forein_table,
                 }
+
                 print(
                     "     #$",
                     table_name,
                     e_forein_table,
                     citem.type,
+                    prop["description"],
                     citem.description,
-                    prop,
+                    citem.annotation,
                 )
+
+    def get_template(self):
+        return """{mark}{name} {verbose} {description}{mark}
+    {name} = models.{model_type}(
+        {options}verbose_name="{verbose}",
+    )"""
 
     def get_relation(self, table_name, prop_name):
         return self.relationship_map[table_name][prop_name]
@@ -123,28 +86,16 @@ class RenderDjangoModel(AbstractRender):
     def get_property(self, name):
         table_name = self.entity.get_name()
         property = self.entity.get_prop(name)
-        relation = self.get_relation(table_name, name)
-        type = relation["type"]
+        type = property["type"]
+        if type == "rel":
+            relation = self.get_relation(table_name, name)
 
-        temp = RenderDjangoModel.TYPE2FIELD[type]
-        if type in (
-            "int",
-            "text",
-            "date",
-            "datetime",
-        ):
-            line = temp.format(
-                name=property["name"],
-                verbose=property["verbose"],
-                description=property["description"],
-                mark='"""',
-                quote='"',
-            )
-        elif type in (
-            "one2many",
-            "one2one",
-            "many2many",
-        ):
+        # print(self.relationship_map["series"]["title"])
+        temp = self.get_template()
+        options = RenderDjangoModel.FIELD_OPTIONS[type]
+        if type not in Entity.VALID_TYPES:
+            line = ""
+        elif type == "rel":
             line = temp.format(
                 name=property["name"],
                 verbose=property["verbose"],
@@ -156,7 +107,13 @@ class RenderDjangoModel(AbstractRender):
                 relname=table_name,
             )
         else:
-            line = ""
+            line = temp.format(
+                name=property["name"],
+                verbose=property["verbose"],
+                description=property["description"],
+                mark='"""',
+                quote='"',
+            )
         return line
 
     def get_entity_header(self):

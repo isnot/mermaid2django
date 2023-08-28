@@ -44,7 +44,7 @@ class RelationshipExpression:
 
 
 class RelationshipItem:
-    def __init__(self, items=[]):
+    def __init__(self, items=[], annotation=""):
         (
             left,
             expression,
@@ -60,6 +60,7 @@ class RelationshipItem:
         self.type = ""
         self.expression = RelationshipExpression(expression)
         self.description = memo.strip('"')
+        self.annotation = annotation
 
     def parse(self):
         if self.expression.is_many2one():
@@ -78,22 +79,25 @@ class RelationshipItem:
             self.type = "one2one"
         if self.expression.is_many2many():
             self.type = "many2many"
+        self.attribute_name = self.annotation.split(" ")[0]
 
     def is_blongs_to_entity_name(self, entity_name):
         return entity_name == self.leaf[0] or entity_name == self.leaf[1]
 
     def __str__(self):
-        return "{} {} {}".format(self.leaf[0], self.leaf[1], self.type)
+        return "{} {} {} {}".format(
+            self.leaf[0], self.leaf[1], self.type, self.annotation
+        )
 
 
 class RelationshipSet:
-    ALL_ENTITIES_NAME = set()
+    ALL_ENTITY_NAMES = set()
 
     def __init__(self, all=[]):
-        self.cardinalities = set(all)
+        self.relations = set(all)
         for items in all:
-            self.ALL_ENTITIES_NAME.add(items.leaf[0])
-            self.ALL_ENTITIES_NAME.add(items.leaf[1])
+            self.ALL_ENTITY_NAMES.add(items.leaf[0])
+            self.ALL_ENTITY_NAMES.add(items.leaf[1])
 
     @staticmethod
     def is_many2many(e: RelationshipItem):
@@ -107,32 +111,32 @@ class RelationshipSet:
     def is_one2one(e: RelationshipItem):
         return e.type == "one2one"
 
-    def get_cardinalities(self):
-        return self.cardinalities
+    def get_relations(self):
+        return self.relations
 
     def is_link_table(self, entity_name=""):
         tmp = entity_name.partition("__")
         if tmp[1] == "" and tmp[2] == "":
             return False
-        return tmp[0] in self.ALL_ENTITIES_NAME and tmp[2] in self.ALL_ENTITIES_NAME
+        return tmp[0] in self.ALL_ENTITY_NAMES and tmp[2] in self.ALL_ENTITY_NAMES
 
     def find_by_entity_name(self, entity_name):
-        if entity_name not in self.ALL_ENTITIES_NAME:
+        if entity_name not in self.ALL_ENTITY_NAMES:
             raise RuntimeError("unkown entity name")
         found = []
-        for citem in self.cardinalities:
+        for citem in self.relations:
             if citem.is_blongs_to_entity_name(entity_name):
                 found.append(citem)
         return found
 
     def get_many2many_all(self):
-        return list(filter(self.is_many2many, list(self.cardinalities)))
+        return list(filter(self.is_many2many, list(self.relations)))
 
     def get_one2many_all(self):
-        return list(filter(self.is_one2many, list(self.cardinalities)))
+        return list(filter(self.is_one2many, list(self.relations)))
 
     def get_one2one_all(self):
-        return list(filter(self.is_one2one, list(self.cardinalities)))
+        return list(filter(self.is_one2one, list(self.relations)))
 
     def get_many2many_by_entity_name(self, entity_name):
         cset = self.find_by_entity_name(entity_name)
