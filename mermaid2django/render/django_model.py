@@ -5,16 +5,16 @@ from mermaid2django.render.abstract import AbstractRender
 
 class RenderDjangoModel(AbstractRender):
     FIELD_OPTIONS = {
-        "int": 'verbose_name="{verbose}", blank=True, ',
-        "char": 'verbose_name="{verbose}", max_length=255, blank=True, ',
-        "text": 'verbose_name="{verbose}", blank=True, ',
-        "url": 'verbose_name="{verbose}", blank=True, ',
-        "date": 'verbose_name="{verbose}", auto_now_add=True, ',
-        "datetime": 'verbose_name="{verbose}", auto_now_add=True, ',
-        "rel": '"{relation}", verbose_name="{verbose}", related_name="{relname}", ',
-        "one2many": "    on_delete=models.CASCADE, ",
-        "one2one": "    on_delete=models.CASCADE, ",
-        "many2many": "",
+        "int": ['verbose_name="{verbose}"', 'blank=True'],
+        "char": ['verbose_name="{verbose}"', 'max_length=255', 'blank=True'],
+        "text": ['verbose_name="{verbose}"', 'blank=True'],
+        "url": ['verbose_name="{verbose}"', 'blank=True'],
+        "date": ['verbose_name="{verbose}"', 'auto_now_add=True'],
+        "datetime": ['verbose_name="{verbose}"', 'auto_now_add=True'],
+        "rel": ['"{relation}"', 'verbose_name="{verbose}"', 'related_name="{relname}"'],
+        "one2many": ['on_delete=models.CASCADE'],
+        "one2one": ['on_delete=models.CASCADE'],
+        "many2many": [],
     }
     MODULE_HEADER = "from django.db import models"
     # null=True, blank=True, default=''
@@ -33,17 +33,12 @@ class RenderDjangoModel(AbstractRender):
         for attribute_name in self.entity.get_attribute_names():
             self.relationship_map[table_name][attribute_name] = {}
             attribute = self.entity.get_attribute(attribute_name)
-            pieces = attribute_name.split("_")
-            pieces_len = len(pieces)
 
             if not attribute["isFK"]:
                 continue
             if attribute["description"] is not None and attribute["description"] != "":
                 # original named FK
                 e_forein_table = attribute["description"].split(" ")[0]
-            elif pieces_len == 2 and pieces[1] == "id":
-                # simple FK
-                e_forein_table = pieces[0]
             else:
                 raise RuntimeError(
                     "forein table name is not found, but also attribute was FK"
@@ -80,17 +75,19 @@ class RenderDjangoModel(AbstractRender):
     def get_template(self, attribute_type="", relation_type=""):
         options = RenderDjangoModel.FIELD_OPTIONS[attribute_type]
         if attribute_type == "rel":
-            options = f"{options}\n    {RenderDjangoModel.FIELD_OPTIONS[relation_type]}"
+            options.extend(RenderDjangoModel.FIELD_OPTIONS[relation_type])
+        options = list(filter(lambda line: line.ljust(8, " "), options))
+        print("####op", options)
+
         template = (
-            """    {mark}{name} {verbose} {description}{mark}
-    {name} = models.{model_type}(
-        """
-            + options
-            + """
-    )
-"""
+            "    {mark}{name} {verbose} {description}{mark}",
+            "    {name} = models.{model_type}(",
+            options,
+            "    )",
         )
-        return template
+
+        print("####tmpl", template)
+        return ""
 
     def get_relation(self, table_name, attribute_name):
         return self.relationship_map[table_name][attribute_name]
@@ -182,4 +179,4 @@ class {name}(models.Model):
         # for xxx in m2m:
         # print(xxx)
 
-        return buf + "\n"
+        return buf
