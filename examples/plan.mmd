@@ -1,9 +1,6 @@
 %%{init:{'theme':'forest'}}%%
 
 erDiagram
-    %% classDef resouce fill:#f582ae
-    %% classDef event fill:#8bd3dd
-
     series |o--o{ comic : "シリーズ名"
     %% magazine 雑誌に載らないストーリー、掲載がない号もある 雑誌連載はWeb連載時には分割されている
     magazine |o--o| story : "初出の掲載誌"
@@ -63,7 +60,7 @@ series {
 %% comic 単行本 1巻、2巻、…。単巻のみの場合はseries=NULL [リソース]
 comic {
     serial id PK
-    %% series comic one2many
+    %% series comic
     rel series FK
     %% 第n巻
     int number
@@ -83,7 +80,7 @@ comic {
 %% web_comic Web連載 第1旅(1)、番外旅、一枚モノ、… [リソース]
 web_comic {
     serial id PK
-    %% story web_comic one2many
+    %% story web_comic
     rel story FK
     char title "各話の名前"
     int part_number "分割の順列"
@@ -111,13 +108,13 @@ magazine {
 %% fragment その他媒体 表紙カラー、店舗特典、ポスター。コミック収録と未収録がある [リソース]
 fragment {
     serial id PK
-    %% story fragment one2many
+    %% story fragment
     rel story FK
-    %% web_comic fragment one2many
+    %% web_comic fragment
     rel web_comic FK
-    %% character fragment many2many
+    %% character fragment
     rel character FK
-    %% place fragment one2many
+    %% place fragment
     rel place FK
     char title
     url url
@@ -137,15 +134,15 @@ journey {
 %% story 単行本の単話 第〇旅前編、第〇旅後編。コミック未収録もある [イベント]
 story {
     serial id PK
-    %% magazine story one2one
+    %% magazine story
     rel magazine FK
-    %% comic story one2many
+    %% comic story
     rel comic FK
-    %% journey story one2many
+    %% journey story
     rel journey FK
     char title
     char subtitle
-    %% place story one2many このストーリーに登場する主な地点をすべて包含するような範囲（四角形）の中心
+    %% place story このストーリーに登場する主な地点をすべて包含するような範囲（四角形）の中心
     rel camera_center_place FK
     int camera_zoom_level
 }
@@ -153,7 +150,7 @@ story {
 %% route 経路 placeを組み合わせて経路とする [リソース]
 route {
     serial id PK
-    %% story route many2many
+    %% story route
     rel story FK
     char name
     text memo
@@ -162,9 +159,9 @@ route {
 %% venue 目的地 会津、松島、那須、… [リソース]
 venue {
     serial id PK
-    %% story venue many2many
+    %% story venue
     rel story FK
-    %% comic venue many2many
+    %% comic venue
     rel comic FK
     char name
     %% 1:都道府県 2:市区町村 3:番地等の細かい行政界 5:著名観光地 6:ランドマーク、顕著な建造物、施設 7:道、航路、等
@@ -174,11 +171,11 @@ venue {
 %% place 場所 東京駅の顔出しパネル、登場店舗、宿泊場所、観光名所、施設、交通拠点 [リソース]
 place {
     serial id PK
-    %% venue place one2many
+    %% venue place
     rel venue FK
-    %% story place many2many
+    %% story place
     rel story FK
-    %% character place many2many
+    %% character place
     rel character FK
     char name
     char latitude
@@ -190,9 +187,9 @@ place {
 %% step 訪問 [イベント]
 step {
     serial id PK
-    %% route step one2many
+    %% route step
     rel route FK
-    %% place step one2many
+    %% place step
     rel place FK
     int number
     datetime datetime
@@ -201,11 +198,11 @@ step {
 %% scene シーン 名シーン、ざつ旅ARのマーカー [イベント]
 scene {
     serial id PK
-    %% story scene one2many
+    %% story scene
     rel story FK
-    %% place scene one2many
+    %% place scene
     rel place FK
-    %% character scene many2many
+    %% character scene
     rel character FK
     %% コミック掲載ページ
     int page "ページ"
@@ -223,9 +220,9 @@ character {
 %% photo flickr (google place photo api有料) [リソース]
 photo {
     serial id PK
-    %% place photo one2many
+    %% place photo
     rel place FK
-    %% user photo one2many
+    %% user photo
     rel user FK
     url url
     int width
@@ -235,9 +232,9 @@ photo {
 %% tweet Twitter 石坂さん、鈴ヶ森さん、読者等、無関係 [リソース]
 tweet {
     serial id PK
-    %% user tweet one2many
+    %% user tweet
     rel user FK
-    %% place tweet one2many
+    %% place tweet
     rel place FK
     int type
     url url
@@ -247,7 +244,7 @@ tweet {
 %% user ユーザー 利用者 [リソース]
 user {
     serial id PK
-    %% group user many2many
+    %% group user
     rel group FK
     char name
     int type
