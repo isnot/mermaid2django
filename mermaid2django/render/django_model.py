@@ -155,7 +155,8 @@ class RenderDjangoModel(AbstractRender):
                 model_type=model_type,
                 mark='"""',
             )
-        return line
+
+        return line.replace('verbose_name="",', "", 1).replace("        \n", "", 1)
 
     def get_entity_header(self):
         name = self.entity.get_name()
