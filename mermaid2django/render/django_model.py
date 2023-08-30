@@ -35,7 +35,10 @@ class RenderDjangoModel(AbstractRender):
             'verbose_name="{verbose}",',
             'related_name="{relname}",',
         ),
-        "one2many": ("on_delete=models.CASCADE",),
+        "one2many": (
+            "null=True,",
+            "on_delete=models.SET_NULL",
+        ),
         "one2one": ("on_delete=models.CASCADE",),
         "many2many": tuple(),
     }
@@ -59,16 +62,14 @@ class RenderDjangoModel(AbstractRender):
 
             if not attribute["isFK"]:
                 continue
-            if attribute["description"] is not None and attribute["description"] != "":
-                # original named FK
-                e_forein_table = attribute["description"].split(" ")[0]
+            if attribute["annotation"] is not None and attribute["annotation"] != "":
+                e_forein_table = attribute["annotation"].split(" ")[0]
             else:
                 raise RuntimeError(
                     "forein table name is not found, but also attribute was FK"
                 )
                 continue
 
-            # print("#scm p    ", table_name, attribute_name, e_forein_table)
             for citem in cset:
                 c_table_name = citem.leaf[1]
                 c_forein_table = citem.leaf[0]
@@ -86,15 +87,6 @@ class RenderDjangoModel(AbstractRender):
                     "forein_table": c_forein_table,
                 }
 
-                # print(
-                #     "# $",
-                #     table_name,
-                #     e_forein_table,
-                #     attribute["description"],
-                #     citem.description,
-                #     citem.annotation,
-                # )
-
     def get_template(self, attribute_type="", relation_type=""):
         options = list(RenderDjangoModel.FIELD_OPTIONS[attribute_type])
         if attribute_type == "rel":
@@ -102,12 +94,12 @@ class RenderDjangoModel(AbstractRender):
         options = list(map(lambda line: "    " + line, options))
 
         template = [
-            "    {mark}{name} {verbose} {description}{mark}",
+            "\n    {mark}{name} {verbose} {annotation}{mark}",
             "{name} = models.{model_type}(",
         ]
         template.extend(options)
         template.append(")")
-        return "\n    ".join(template) + "\n"
+        return "\n    ".join(template)
 
     def get_relation(self, table_name, attribute_name):
         return self.relationship_map[table_name][attribute_name]
@@ -134,7 +126,7 @@ class RenderDjangoModel(AbstractRender):
             line = temp.format(
                 name=attribute["name"],
                 verbose=attribute["verbose"],
-                description=attribute["description"],
+                annotation=attribute["annotation"],
                 model_type=model_type,
                 relation=relation["forein_table"].capitalize(),
                 relname=table_name,
@@ -146,12 +138,14 @@ class RenderDjangoModel(AbstractRender):
                 model_type = "PositiveIntegerField"
             elif type == "url":
                 model_type = "URLField"
+            elif type == "datetime":
+                model_type = "DateTimeField"
             else:
                 model_type = type.capitalize() + "Field"
             line = temp.format(
                 name=attribute["name"],
                 verbose=attribute["verbose"],
-                description=attribute["description"],
+                annotation=attribute["annotation"],
                 model_type=model_type,
                 mark='"""',
             )
