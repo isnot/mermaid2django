@@ -33,7 +33,7 @@ class RenderDjangoModel(AbstractRender):
         "rel": (
             '"{relation}",',
             'verbose_name="{verbose}",',
-            'related_name="{relname}",',
+            'related_name="{related_name}",',
         ),
         "one2many": (
             "null=True,",
@@ -62,6 +62,8 @@ class RenderDjangoModel(AbstractRender):
 
             if not attribute["isFK"]:
                 continue
+
+            # ToDo define forein_table
             if attribute["annotation"] is not None and attribute["annotation"] != "":
                 e_forein_table = attribute["annotation"].split(" ")[0]
             else:
@@ -85,6 +87,7 @@ class RenderDjangoModel(AbstractRender):
                 self.relationship_map[table_name][attribute_name] = {
                     "type": citem.type,
                     "forein_table": c_forein_table,
+                    "related_name": attribute["name"],
                 }
 
     def get_template(self, attribute_type="", relation_type=""):
@@ -129,7 +132,7 @@ class RenderDjangoModel(AbstractRender):
                 annotation=attribute["annotation"],
                 model_type=model_type,
                 relation=relation["forein_table"].capitalize(),
-                relname=table_name,
+                related_name=relation["related_name"],
                 mark='"""',
             )
         else:
