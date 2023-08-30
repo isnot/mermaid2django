@@ -127,9 +127,9 @@ class RelationshipSet:
         if entity_name not in self.ALL_ENTITY_NAMES:
             raise RuntimeError("unkown entity name")
         found = []
-        for citem in self.relations:
-            if citem.is_blongs_to_entity_name(entity_name):
-                found.append(citem)
+        for item in self.relations:
+            if item.is_blongs_to_entity_name(entity_name):
+                found.append(item)
         return found
 
     def get_many2many_all(self):
@@ -142,13 +142,13 @@ class RelationshipSet:
         return list(filter(self.is_one2one, list(self.relations)))
 
     def get_many2many_by_entity_name(self, entity_name):
-        cset = self.find_by_entity_name(entity_name)
-        return list(filter(self.is_many2many, cset))
+        myset = self.find_by_entity_name(entity_name)
+        return list(filter(self.is_many2many, myset))
 
     def get_one2many_by_entity_name(self, entity_name):
-        cset = self.find_by_entity_name(entity_name)
-        return list(filter(self.is_one2many, cset))
+        myset = self.find_by_entity_name(entity_name)
+        return list(filter(self.is_one2many, myset))
 
     def get_one2one_by_entity_name(self, entity_name):
-        cset = self.find_by_entity_name(entity_name)
-        return list(filter(self.is_one2one, cset))
+        myset = self.find_by_entity_name(entity_name)
+        return list(filter(self.is_one2one, myset))
