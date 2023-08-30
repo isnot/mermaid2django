@@ -7,28 +7,32 @@ class RenderDjangoModel(AbstractRender):
     FIELD_OPTIONS = {
         "int": (
             'verbose_name="{verbose}",',
+            "null=True,",
             "blank=True",
         ),
         "char": (
             'verbose_name="{verbose}",',
             "max_length=255,",
+            "null=True,",
             "blank=True",
         ),
         "text": (
             'verbose_name="{verbose}",',
+            "null=True,",
             "blank=True",
         ),
         "url": (
             'verbose_name="{verbose}",',
+            "null=True,",
             "blank=True",
         ),
         "date": (
             'verbose_name="{verbose}",',
-            "auto_now_add=True",
+            "null=True",
         ),
         "datetime": (
             'verbose_name="{verbose}",',
-            "auto_now_add=True",
+            "null=True",
         ),
         "rel": (
             '"{relation}",',
@@ -37,9 +41,12 @@ class RenderDjangoModel(AbstractRender):
         ),
         "one2many": (
             "null=True,",
-            "on_delete=models.SET_NULL",
+            "on_delete=models.DO_NOTHING",
         ),
-        "one2one": ("on_delete=models.CASCADE",),
+        "one2one": (
+            "null=True,",
+            "on_delete=models.CASCADE",
+        ),
         "many2many": tuple(),
     }
     MODULE_HEADER = "from django.db import models"
