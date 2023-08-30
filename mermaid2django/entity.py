@@ -6,7 +6,7 @@ class Entity:
         type<str>: アトリビュート（※カラム）の型
         name<str>: アトリビュート名称（英数字）
         verbose<str>: アトリビュートの、分かりやすい表示名
-        description<str>: アトリビュートのメモ（アノテーション）
+        annotation<str>: アトリビュートのメモ（アノテーション）
 
         usage: 使用例
         book = Entity("book", "蔵書目録")
@@ -14,7 +14,7 @@ class Entity:
             type="char",
             name="title",
             verbose="タイトル",
-            description="本のタイトルは、honto等の書誌情報で確認してから正式な名前をつける",
+            annotation="本のタイトルは、honto等の書誌情報で確認してから正式な名前をつける",
             isPK=False,
             isFK=False,
         )
@@ -27,7 +27,7 @@ class Entity:
         "isPK",
         "isFK",
         "verbose",
-        "description",
+        "annotation",
     )
     VALID_TYPES = (
         "serial",
@@ -40,7 +40,7 @@ class Entity:
         "rel",
     )
 
-    def __init__(self, *args):
+    def __init__(self, name, description=""):
         """
         __init__ インスタンス生成
 
@@ -58,15 +58,12 @@ class Entity:
         self.attrs = {}
         self.index_def = {}
 
-        opt_size = len(args)
-        if opt_size > 1:
-            # a.k.a. table description
-            self.description = args[1]
-        if opt_size > 0:
-            # a.k.a. table name
-            self.name = args[0]
-        else:
+        if name is None or name == "":
             raise RuntimeError("Entity name is required")
+        # a.k.a. table name
+        self.name = name
+        # a.k.a. table description
+        self.description = description
 
     def get_name(self):
         return self.name
