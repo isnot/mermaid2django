@@ -2,7 +2,7 @@ class Entity:
     """
     ER図におけるエンティティ（※テーブル）1つを表す
 
-    ATTR_KEYS<tuple>: クラス定数。各プロパティが持つ属性
+    ATTR_KEYS<tuple>: クラス定数。各属性が持つ属性
         type<str>: アトリビュート（※カラム）の型
         name<str>: アトリビュート名称（英数字）
         verbose<str>: アトリビュートの、分かりやすい表示名
@@ -99,7 +99,7 @@ class Entity:
         Raises
         ------
         TypeError
-            未知のプロパティ名
+            未知の属性名
         """
         if name in self.attrs:
             return self.attrs[name]
