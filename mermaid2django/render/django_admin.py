@@ -4,8 +4,8 @@ from mermaid2django.render.abstract import AbstractRender
 class RenderDjangoAdmin(AbstractRender):
     MODULE_HEADER = "from django.contrib import admin"
 
-    def __init__(self, all_entity=[]):
-        self.all = all_entity
+    def __init__(self, all_entities=[]):
+        self.all = sorted(list(map(lambda e: e.get_name().capitalize(), all_entities)))
 
     def get_import(self):
         lines = ["from .models import ("]
@@ -14,7 +14,7 @@ class RenderDjangoAdmin(AbstractRender):
         return "\n".join(lines)
 
     def get_admin(self):
-        buf = self.MODULE_HEADER + self.get_import(self)
+        buf = self.MODULE_HEADER + "\n\n" + self.get_import() + "\n\n"
         for name in self.all:
             buf += f"admin.site.register({name})\n"
         return buf

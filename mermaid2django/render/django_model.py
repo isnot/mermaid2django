@@ -61,7 +61,7 @@ class RenderDjangoModel(AbstractRender):
     def setup_relationship_map(self):
         table_name = self.entity.get_name()
         self.relationship_map[table_name] = {}
-        cset = self.relationship_set.find_by_entity_name(table_name)
+        myset = self.relationship_set.find_by_entity_name(table_name)
 
         for attribute_name in self.entity.get_attribute_names():
             self.relationship_map[table_name][attribute_name] = {}
@@ -79,16 +79,16 @@ class RenderDjangoModel(AbstractRender):
                 )
                 continue
 
-            for citem in cset:
-                c_table_name = citem.leaf[1]
-                c_forein_table = citem.leaf[0]
+            for relation_item in myset:
+                c_table_name = relation_item.leaf[1]
+                c_forein_table = relation_item.leaf[0]
                 if table_name != c_table_name:
                     continue
                 if e_forein_table != c_forein_table:
                     continue
                 if (
-                    len(citem.attribute_name) > 0
-                    and citem.attribute_name != attribute_name
+                    len(relation_item.attribute_name) > 0
+                    and relation_item.attribute_name != attribute_name
                 ):
                     continue
 
@@ -98,7 +98,7 @@ class RenderDjangoModel(AbstractRender):
                     related_name = attribute_name
 
                 self.relationship_map[table_name][attribute_name] = {
-                    "type": citem.type,
+                    "type": relation_item.type,
                     "forein_table": c_forein_table,
                     "related_name": related_name,
                 }
@@ -190,24 +190,16 @@ class {name}(models.Model):
         return self.id
 """
 
-    def get_model(self, cmap={}):
+    def get_model(self):
         entity_name = self.entity.get_name()
         if self.relationship_set.is_link_table(entity_name):
             return None
-
-        # self.relationship_map = self.relationship_set.get_map()
-        # one2one = self.relationship_set.get_one2one_by_entity_name(entity_name)
-        # m2m = self.relationship_set.get_many2many_by_entity_name(entity_name)
-        # one2m = self.relationship_set.get_one2many_by_entity_name(entity_name)
-
         buf = self.get_entity_header()
-        for i in self.entity.get_attribute_names():
-            attribute = self.get_attribute(i)
+
+        for name in self.entity.get_attribute_names():
+            attribute = self.get_attribute(name)
             if attribute == "":
                 continue
             buf += attribute
 
-        # for xxx in m2m:
-        # print(xxx)
-
-        return buf
+        return buf + "\n"
