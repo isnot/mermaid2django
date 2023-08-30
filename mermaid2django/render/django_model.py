@@ -84,10 +84,16 @@ class RenderDjangoModel(AbstractRender):
                     and citem.attribute_name != attribute_name
                 ):
                     continue
+
+                if self.relationship_set.is_valid_entity_name(attribute_name):
+                    related_name = table_name
+                else:
+                    related_name = attribute_name
+
                 self.relationship_map[table_name][attribute_name] = {
                     "type": citem.type,
                     "forein_table": c_forein_table,
-                    "related_name": attribute["name"],
+                    "related_name": related_name,
                 }
 
     def get_template(self, attribute_type="", relation_type=""):

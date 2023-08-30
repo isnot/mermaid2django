@@ -120,6 +120,9 @@ class RelationshipSet:
             return False
         return tmp[0] in self.ALL_ENTITY_NAMES and tmp[2] in self.ALL_ENTITY_NAMES
 
+    def is_valid_entity_name(self, name):
+        return name in self.ALL_ENTITY_NAMES
+
     def find_by_entity_name(self, entity_name):
         if entity_name not in self.ALL_ENTITY_NAMES:
             raise RuntimeError("unkown entity name")
