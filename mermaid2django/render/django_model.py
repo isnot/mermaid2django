@@ -5,16 +5,39 @@ from mermaid2django.render.abstract import AbstractRender
 
 class RenderDjangoModel(AbstractRender):
     FIELD_OPTIONS = {
-        "int": ['verbose_name="{verbose}"', 'blank=True'],
-        "char": ['verbose_name="{verbose}"', 'max_length=255', 'blank=True'],
-        "text": ['verbose_name="{verbose}"', 'blank=True'],
-        "url": ['verbose_name="{verbose}"', 'blank=True'],
-        "date": ['verbose_name="{verbose}"', 'auto_now_add=True'],
-        "datetime": ['verbose_name="{verbose}"', 'auto_now_add=True'],
-        "rel": ['"{relation}"', 'verbose_name="{verbose}"', 'related_name="{relname}"'],
-        "one2many": ['on_delete=models.CASCADE'],
-        "one2one": ['on_delete=models.CASCADE'],
-        "many2many": [],
+        "int": (
+            'verbose_name="{verbose}",',
+            "blank=True",
+        ),
+        "char": (
+            'verbose_name="{verbose}",',
+            "max_length=255,",
+            "blank=True",
+        ),
+        "text": (
+            'verbose_name="{verbose}",',
+            "blank=True",
+        ),
+        "url": (
+            'verbose_name="{verbose}",',
+            "blank=True",
+        ),
+        "date": (
+            'verbose_name="{verbose}",',
+            "auto_now_add=True",
+        ),
+        "datetime": (
+            'verbose_name="{verbose}",',
+            "auto_now_add=True",
+        ),
+        "rel": (
+            '"{relation}",',
+            'verbose_name="{verbose}",',
+            'related_name="{relname}",',
+        ),
+        "one2many": ("on_delete=models.CASCADE",),
+        "one2one": ("on_delete=models.CASCADE",),
+        "many2many": tuple(),
     }
     MODULE_HEADER = "from django.db import models"
     # null=True, blank=True, default=''
@@ -73,21 +96,18 @@ class RenderDjangoModel(AbstractRender):
                 # )
 
     def get_template(self, attribute_type="", relation_type=""):
-        options = RenderDjangoModel.FIELD_OPTIONS[attribute_type]
+        options = list(RenderDjangoModel.FIELD_OPTIONS[attribute_type])
         if attribute_type == "rel":
-            options.extend(RenderDjangoModel.FIELD_OPTIONS[relation_type])
-        options = list(filter(lambda line: line.ljust(8, " "), options))
-        print("####op", options)
+            options.extend(list(RenderDjangoModel.FIELD_OPTIONS[relation_type]))
+        options = list(map(lambda line: "    " + line, options))
 
-        template = (
+        template = [
             "    {mark}{name} {verbose} {description}{mark}",
-            "    {name} = models.{model_type}(",
-            options,
-            "    )",
-        )
-
-        print("####tmpl", template)
-        return ""
+            "{name} = models.{model_type}(",
+        ]
+        template.extend(options)
+        template.append(")")
+        return "\n    ".join(template) + "\n"
 
     def get_relation(self, table_name, attribute_name):
         return self.relationship_map[table_name][attribute_name]
