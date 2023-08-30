@@ -140,7 +140,7 @@ class ParseMermaidErDiagram:
         if name not in self.entities.keys():
             self.entities[name] = Entity(
                 name,
-                self.__last_comment,
+                description=self.__last_comment,
             )
         self.__last_comment = ""
 
@@ -168,7 +168,7 @@ class ParseMermaidErDiagram:
             isPK=isPK,
             isFK=isFK,
             verbose=verbose,
-            description=self.__last_comment.strip(),
+            annotation=self.__last_comment.strip(),
         )
         self.__last_comment = ""
 
