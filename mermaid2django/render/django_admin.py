@@ -13,8 +13,26 @@ class RenderDjangoAdmin(AbstractRender):
         lines.append(")")
         return "\n".join(lines)
 
+    def get_model_admin(self, class_name):
+        class_def = "class {name}Admin(admin.ModelAdmin):".format(name=class_name)
+        lines = [class_def]
+        lines.append(
+            """    fields = ["id"]  # ["name", "title", "type", "description", "memo"]
+    # fieldsets = []
+    # list_filter = ["title"]
+    # search_fields = ["title"]
+    # list_display = ("id", "name", "title")
+    # list_display_links = ("id", "name", "title")
+"""
+        )
+        return "\n".join(lines)
+
     def get_admin(self):
         buf = self.MODULE_HEADER + "\n\n" + self.get_import() + "\n\n"
         for name in self.all:
-            buf += f"admin.site.register({name})\n"
+            buf = (
+                buf
+                + "\n\n@admin.register({name})\n".format(name=name)
+                + self.get_model_admin(name)
+            )
         return buf
