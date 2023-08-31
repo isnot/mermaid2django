@@ -17,7 +17,7 @@ class RenderDjangoAdmin(AbstractRender):
         class_def = "class {name}Admin(admin.ModelAdmin):".format(name=class_name)
         lines = [class_def]
         lines.append(
-            """    fields = ["id"]  # ["name", "title", "type", "description", "memo"]
+            """    fields = ["id"]  # ["name", "title", "type", "memo"]
     # fieldsets = []
     # list_filter = ["title"]
     # search_fields = ["title"]
