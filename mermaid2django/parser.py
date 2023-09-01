@@ -65,7 +65,11 @@ class ParseMermaidErDiagram:
         if len(lines):
             return lines
 
-    def get_entities(self):
+    def get_entities(self, via="list"):
+        if via == "dict":
+            return self.entities
+        if via == "only_names":
+            return self.entities.keys()
         return self.entities.values()
 
     def get_relationship_set(self):
