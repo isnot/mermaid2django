@@ -6,9 +6,10 @@ from mermaid2django.render.make_model import model_maker
 input_mermaid = "./examples/plan.mmd"
 output_model = "./dist/models.py"
 output_admin = "./dist/admin.py"
+output_csv = "./dist/database.tsv"
 
 task = ParseMermaidErDiagram(input_mermaid)
 entities = task.parse()
 model_maker(task, entities, output_model)
 admin_maker(entities, output_admin)
-csv_maker(task.get_entities(via="dict"))
+csv_maker(task.get_entities(via="dict"), output_csv)
