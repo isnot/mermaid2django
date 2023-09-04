@@ -37,6 +37,7 @@ erDiagram
     %% group ユーザーは何れかのグループに所属する
     group }|--|{ user : "所属"
 
+%% ざつ旅 鈴ヶ森ちか短編集(仮)
 
 %% series 正シリーズと番外シリーズは、別々に登録する ※巻数が自然数の順列になる [リソース]
 series {
@@ -45,6 +46,7 @@ series {
     char title "作品名"
     %% 略称や通称で代表的なもの
     char short_title "略称"
+    %% 著者複数名の場合は、代表者をカンマ区切りで列挙する
     char author "著者名"
     %% 出版社 例：KADOKAWA
     char publisher "出版社"
@@ -54,6 +56,7 @@ series {
     char magazine_title "連載誌"
     %% 公式サイトや他のWebサイトから代表するものを1件
     url site "代表（公式）サイト"
+    %% モデルにはあえてリレーションを定義せず
     int rel_series_id "関係するシリーズ（単方向リスト）"
 }
 
@@ -63,7 +66,7 @@ comic {
     %% series comic
     rel series FK
     %% 第n巻
-    int number
+    int number "巻数"
     %% 例：ざつ旅-That's Journey- 1
     char title "各巻タイトル"
     %% 特徴的な帯の文言
@@ -74,7 +77,7 @@ comic {
     %% 版元ドットコムの書誌情報DBより
     url cover_image_url "書影url"
     char isbn "ISBN13"
-    text memo
+    text memo "編集メモ"
 }
 
 %% web_comic Web連載 第1旅(1)、番外旅、一枚モノ、… [リソース]
@@ -85,11 +88,11 @@ web_comic {
     char title "各話の名前"
     int part_number "分割の順列"
     int pages "ページ数"
-    url cw_url "Comic Walker"
-    date cw_published
-    url nico_url "ニコニコ静画"
-    date nico_published
-    text memo
+    url cw_url "Comic Walkerリンク"
+    date cw_published "CW公開日"
+    url nico_url "ニコニコ静画リンク"
+    date nico_published "nico公開日"
+    text memo "編集メモ"
 }
 
 %% magazine 雑誌連載 マオウ [イベント]
@@ -99,13 +102,24 @@ magazine {
     char title "タイトル"
     %% 書店等での発売日 ※タイトルの月の2か月前27日前後
     date released "発売日"
-    char tag_line "表紙や付録になった号、などを表すタグ"
-    url site
-    url cover_image
-    text memo
+    %% 表紙や付録になった号、などを表すタグ
+    char tag_line "管理用タグ"
+    %% https://dengekimaoh.jp/magazine/magazine-12240.html
+    url site "雑誌リンク"
+    %% https://dengekimaoh.jp/archives/008/202208/941abdc5a8102a20bb186ae99e37f234c96e5209270d10b52c0293a2419db042.jpg
+    url cover_image "雑誌表紙"
+    text memo "編集メモ"
 }
 
-%% fragment その他媒体 表紙カラー、店舗特典、ポスター。コミック収録と未収録がある [リソース]
+%% types 分類型の項目の選択肢マスター [リソース]
+master {
+    serial id PK
+    char name "参照名"
+    char key "属性"
+    char value "値"
+}
+
+%% fragment その他媒体 表紙カラー、店舗特典、ポスター、別冊、雑誌付録。コミック収録と未収録がある [リソース]
 fragment {
     serial id PK
     %% story fragment
@@ -116,19 +130,19 @@ fragment {
     rel character FK
     %% place fragment
     rel place FK
-    char title
-    url url
-    text memo
+    char title "名前"
+    url url "参照URL/リンク"
+    text memo "編集メモ"
 }
 
 %% journey 第〇旅、番外旅 [イベント]
 journey {
     serial id PK
-    int number
-    char key
-    %% 1:本編 2:番外旅 9:その他
+    int number "第〇旅"
+    char key "記号"
+    %% 1:本編 2:番外旅 9:その他 ToDo
     int type "タイプ"
-    text memo
+    text memo "編集メモ"
 }
 
 %% story 単行本の単話 第〇旅前編、第〇旅後編。コミック未収録もある [イベント]
@@ -140,11 +154,11 @@ story {
     rel comic FK
     %% journey story
     rel journey FK
-    char title
-    char subtitle
+    char title "単話タイトル"
+    char subtitle "サブタイ"
     %% place story このストーリーに登場する主な地点をすべて包含するような範囲（四角形）の中心
-    rel camera_center_place FK
-    int camera_zoom_level
+    rel camera_center_place FK "(領域設定用)"
+    int camera_zoom_level "(領域設定用)z-index"
 }
 
 %% route 経路 placeを組み合わせて経路とする [リソース]
@@ -152,8 +166,8 @@ route {
     serial id PK
     %% story route
     rel story FK
-    char name
-    text memo
+    char name "名前"
+    text memo "編集メモ"
 }
 
 %% venue 目的地 会津、松島、那須、… [リソース]
@@ -163,9 +177,9 @@ venue {
     rel story FK
     %% comic venue
     rel comic FK
-    char name
+    char name "名称"
     %% 1:都道府県 2:市区町村 3:番地等の細かい行政界 5:著名観光地 6:ランドマーク、顕著な建造物、施設 7:道、航路、等
-    int type ""
+    int type "分類"
 }
 
 %% place 場所 東京駅の顔出しパネル、登場店舗、宿泊場所、観光名所、施設、交通拠点 [リソース]
@@ -177,11 +191,11 @@ place {
     rel story FK
     %% character place
     rel character FK
-    char name
-    char latitude
-    char longitude
-    char altitude
-    text memo
+    char name "地点名"
+    char latitude "緯度"
+    char longitude "経度"
+    char altitude "標高"
+    text memo "編集メモ"
 }
 
 %% step 訪問 routeに含まれる地点を訪れた日時 [イベント]
@@ -191,8 +205,8 @@ step {
     rel route FK
     %% place step
     rel place FK
-    int number
-    datetime datetime
+    int number "順番"
+    datetime datetime "日時"
 }
 
 %% scene シーン 名シーン、ざつ旅ARのマーカー [イベント]
@@ -206,15 +220,15 @@ scene {
     rel character FK
     %% コミック掲載ページ
     int page "ページ"
-    text memo
+    text memo "編集メモ"
 }
 
 %% character キャラクター 主要5人、編集部、他 [リソース]
 character {
     serial id PK
-    char name
-    char type
-    text description
+    char name "名前"
+    char type "分類"
+    text description "紹介文"
 }
 
 %% photo flickr (google place photo api有料) [リソース]
@@ -224,9 +238,9 @@ photo {
     rel place FK
     %% user photo
     rel user FK
-    url url
-    int width
-    int height
+    url url "参照URL"
+    int width "画像幅"
+    int height "画像高さ"
 }
 
 %% tweet Twitter 石坂さん、鈴ヶ森さん、読者等、無関係 [リソース]
@@ -236,9 +250,19 @@ tweet {
     rel user FK
     %% place tweet
     rel place FK
-    int type
-    url url
-    text description
+    int type "分類"
+    url url "固定URL"
+    text description "内容"
+}
+
+%% person コンテンツの作者 ツイート/写真を撮影した人 [リソース]
+person {
+    serial id PK
+    %% group user
+    rel group FK
+    char name "名前"
+    int type "分類"
+    text memo "編集メモ"
 }
 
 %% user ユーザー 利用者 [リソース]
@@ -248,7 +272,7 @@ user {
     rel group FK
     char name
     int type
-    text memo
+    text memo "編集メモ"
 }
 
 %% group グループ [リソース]
@@ -256,7 +280,7 @@ group {
     serial id PK
     char name
     int visibility
-    text memo
+    text memo "編集メモ"
 }
 
 %% role [リソース]
