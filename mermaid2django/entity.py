@@ -35,6 +35,7 @@ class Entity:
         "char",
         "text",
         "url",
+        "isbn",
         "date",
         "datetime",
         "rel",

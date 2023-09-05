@@ -26,6 +26,11 @@ class RenderDjangoModel(AbstractRender):
             "null=True,",
             "blank=True",
         ),
+        "isbn": (
+            'verbose_name="{verbose}",',
+            "null=True,",
+            "blank=True",
+        ),
         "date": (
             'verbose_name="{verbose}",',
             "null=True",
@@ -154,6 +159,8 @@ class RenderDjangoModel(AbstractRender):
                 model_type = "PositiveIntegerField"
             elif type == "url":
                 model_type = "URLField"
+            elif type == "isbn":
+                model_type = "ISBNField"
             elif type == "datetime":
                 model_type = "DateTimeField"
             else:
