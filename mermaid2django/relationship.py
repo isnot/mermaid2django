@@ -8,6 +8,7 @@ class RelationshipExpression:
         |o--|{
         }|--|{
     """
+
     def __init__(self, piece=""):
         if len(piece) != 6:
             raise TypeError("missmatch")
@@ -60,6 +61,7 @@ class RelationshipItem:
     説明文はダブルクォーテーションで囲む。省略する場合は、「""」
     アノテーションの冒頭1ワード（空白文字で区切る）は、特別に属性名とみなす
     """
+
     def __init__(self, items=[], annotation=""):
         (
             left,
@@ -126,6 +128,7 @@ class RelationshipSet:
     RuntimeError
         インスタンス生成時点での属性名にない文字列で検索しようとした
     """
+
     ALL_ENTITY_NAMES = set()
 
     def __init__(self, all=[]):

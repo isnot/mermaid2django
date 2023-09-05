@@ -20,6 +20,7 @@ class ParseMermaidErDiagram:
     RuntimeError
         未対応の形式です。入力を解析できませんでした。
     """
+
     LEX_TOKENS = (
         {
             "type": "blank_line",
