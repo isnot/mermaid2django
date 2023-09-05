@@ -17,25 +17,36 @@ erDiagram
     story }|--|{ venue : ""
     story }|--|{ place : "ストーリー登場地点"
     %% camera_center_place ストーリー登場地点を含む領域(四角形)の中心座標
-    place |o--|{ story : "領域"
+    place |o--|| story : "領域"
     %% story 単話に登場する地点をルートとして表現する
     story }|--|{ route : "複数あり"
-    place ||--|{ step : "順列あり"
+    place ||--|{ step : "訪問"
     route ||--|{ step : "順列あり"
     venue ||--|{ place : ""
     comic }o--o{ venue : ""
     place |o--o{ fragment : ""
     place |o--o{ scene : ""
-    place |o--o{ tweet : ""
-    place |o--o{ photo : ""
+    step |o--o{ tweet : ""
+    step |o--o{ photo : ""
     character }|--|{ place : ""
     character }|--o{ fragment : ""
     %% character 登場するキャラクター
     character }|--o{ scene : "登場"
-    user |o--o{ tweet : ""
-    user |o--o{ photo : ""
-    %% group ユーザーは何れかのグループに所属する
-    group }|--|{ user : "所属"
+    person |o--o{ tweet : ""
+    person |o--o{ photo : ""
+    %% user "認証情報とユーザー情報の紐付け"
+    user |o--o| person : ""
+    type_master |o--o{ character : ""
+    type_master |o--o{ fragment : ""
+    type_master |o--o{ journey : ""
+    type_master |o--o{ person : ""
+    type_master |o--o{ photo : ""
+    type_master |o--o{ route : ""
+    type_master |o--o{ scene : ""
+    type_master |o--o{ story : ""
+    type_master |o--o{ tweet : ""
+    type_master |o--o{ venue : ""
+
 
 %% ざつ旅 鈴ヶ森ちか短編集(仮)
 
@@ -56,8 +67,8 @@ series {
     char magazine_title "連載誌"
     %% 公式サイトや他のWebサイトから代表するものを1件
     url site "代表（公式）サイト"
-    %% モデルにはあえてリレーションを定義せず
-    int rel_series_id "関係するシリーズ（単方向リスト）"
+    %% モデルにはあえてリレーションを定義せず （単方向リスト）
+    int rel_series_id "関係シリーズ"
 }
 
 %% comic 単行本 1巻、2巻、…。単巻のみの場合はseries=NULL [リソース]
@@ -65,7 +76,7 @@ comic {
     serial id PK
     %% series comic
     rel series FK
-    %% 第n巻
+    %% 第n巻 作品毎に呼び方のバリエーションがある
     int number "巻数"
     %% 例：ざつ旅-That's Journey- 1
     char title "各巻タイトル"
@@ -76,7 +87,7 @@ comic {
     date released "書店発売日"
     %% 版元ドットコムの書誌情報DBより
     url cover_image_url "書影url"
-    char isbn "ISBN13"
+    isbn isbn "ISBN13"
     text memo "編集メモ"
 }
 
@@ -111,8 +122,8 @@ magazine {
     text memo "編集メモ"
 }
 
-%% types 分類型の項目の選択肢マスター [リソース]
-master {
+%% type_master 分類型の項目の選択肢マスター [リソース]
+type_master {
     serial id PK
     char name "参照名"
     char key "属性"
@@ -130,6 +141,8 @@ fragment {
     rel character FK
     %% place fragment
     rel place FK
+    %% type_master fragment
+    rel type_master FK "分類 種別"
     char title "名前"
     url url "参照URL/リンク"
     text memo "編集メモ"
@@ -138,10 +151,10 @@ fragment {
 %% journey 第〇旅、番外旅 [イベント]
 journey {
     serial id PK
+    %% type_master journey 1:本編 2:番外旅 9:その他 ToDo
+    rel type_master FK "分類"
     int number "第〇旅"
     char key "記号"
-    %% 1:本編 2:番外旅 9:その他 ToDo
-    int type "タイプ"
     text memo "編集メモ"
 }
 
@@ -154,8 +167,10 @@ story {
     rel comic FK
     %% journey story
     rel journey FK
+    %% type_master story 本編、番外旅、おうちで料理 ToDo
+    rel type_master FK "分類"
     char title "単話タイトル"
-    char subtitle "サブタイ"
+    char subtitle "サブタイトル"
     %% place story このストーリーに登場する主な地点をすべて包含するような範囲（四角形）の中心
     rel camera_center_place FK "(領域設定用)"
     int camera_zoom_level "(領域設定用)z-index"
@@ -166,6 +181,8 @@ route {
     serial id PK
     %% story route
     rel story FK
+    %% type_master route 鈴ヶ森さんツイ、作者、マップ取り込み、調整済 ToDo
+    rel type_master FK "分類"
     char name "名前"
     text memo "編集メモ"
 }
@@ -177,9 +194,11 @@ venue {
     rel story FK
     %% comic venue
     rel comic FK
-    char name "名称"
     %% 1:都道府県 2:市区町村 3:番地等の細かい行政界 5:著名観光地 6:ランドマーク、顕著な建造物、施設 7:道、航路、等
-    int type "分類"
+    %% type_master venue ToDo
+    rel type_master FK "分類"
+    char name "名称"
+
 }
 
 %% place 場所 東京駅の顔出しパネル、登場店舗、宿泊場所、観光名所、施設、交通拠点 [リソース]
@@ -194,7 +213,7 @@ place {
     char name "地点名"
     char latitude "緯度"
     char longitude "経度"
-    char altitude "標高"
+    char altitude "高度"
     text memo "編集メモ"
 }
 
@@ -218,6 +237,8 @@ scene {
     rel place FK
     %% character scene
     rel character FK
+    %% type_master scene ToDo
+    rel type_master FK "分類"
     %% コミック掲載ページ
     int page "ページ"
     text memo "編集メモ"
@@ -226,18 +247,22 @@ scene {
 %% character キャラクター 主要5人、編集部、他 [リソース]
 character {
     serial id PK
+    %% type_master character ToDo
+    rel type_master FK "分類"
     char name "名前"
-    char type "分類"
     text description "紹介文"
 }
 
 %% photo flickr (google place photo api有料) [リソース]
 photo {
     serial id PK
-    %% place photo
-    rel place FK
-    %% user photo
-    rel user FK
+    %% step photo
+    rel step FK
+    %% person photo
+    rel person FK
+    %% type_master photo 出典別？ ToDo
+    rel type_master FK "分類"
+    char title "タイトル"
     url url "参照URL"
     int width "画像幅"
     int height "画像高さ"
@@ -246,11 +271,12 @@ photo {
 %% tweet Twitter 石坂さん、鈴ヶ森さん、読者等、無関係 [リソース]
 tweet {
     serial id PK
-    %% user tweet
-    rel user FK
-    %% place tweet
-    rel place FK
-    int type "分類"
+    %% person tweet
+    rel person FK
+    %% step tweet
+    rel step FK
+    %% type_master tweet 鈴ヶ森さん、作者、巡礼・追走、 ToDo
+    rel type_master FK "分類"
     url url "固定URL"
     text description "内容"
 }
@@ -258,8 +284,10 @@ tweet {
 %% person コンテンツの作者 ツイート/写真を撮影した人 [リソース]
 person {
     serial id PK
-    %% group user
-    rel group FK
+    %% user person
+    rel user FK
+    %% type_master person ToDo
+    rel type_master FK "分類"
     char name "名前"
     int type "分類"
     text memo "編集メモ"
@@ -268,19 +296,6 @@ person {
 %% user ユーザー 利用者 [リソース]
 user {
     serial id PK
-    %% group user
-    rel group FK
-    char name
-    int type
-    text memo "編集メモ"
-}
-
-%% group グループ [リソース]
-group {
-    serial id PK
-    char name
-    int visibility
-    text memo "編集メモ"
 }
 
 %% role [リソース]
