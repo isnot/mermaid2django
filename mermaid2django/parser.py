@@ -295,15 +295,15 @@ class ParseMermaidErDiagram:
             字句解析済みデータ, by default []
         """
         m = self.get_current_entity()
-        verbose = line[2].strip('"')
+        verbose = line[2].lstrip()
         if verbose.find("PK") != -1:
             isPK = True
-            verbose = verbose.removeprefix("PK").strip()
+            verbose = verbose.removeprefix("PK").strip(' "')
         else:
             isPK = False
         if verbose.find("FK") != -1:
             isFK = True
-            verbose = verbose.removeprefix("FK").strip()
+            verbose = verbose.removeprefix("FK").strip(' "')
         else:
             isFK = False
         if verbose is None:
