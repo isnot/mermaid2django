@@ -159,7 +159,7 @@ No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制
 story
 No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制	default	更新	備考
 1		✔	camera_center_place	(領域設定用)	rel					place story このストーリーに登場する主な地点をすべて包含するような範囲(四角形)の中心
-2			camera_zoom_level	(領域設定用)z-index	int					
+2			camera_zoom_level	(領域設定用)zoom	int					
 3		✔	comic		rel					
 4	✔		id		serial					
 5		✔	journey		rel					

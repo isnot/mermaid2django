@@ -357,9 +357,9 @@ class Story(models.Model):
         null=True,
         on_delete=models.CASCADE
     )
-    """camera_zoom_level (領域設定用)z-index """
+    """camera_zoom_level (領域設定用)zoom """
     camera_zoom_level = models.PositiveIntegerField(
-        verbose_name="(領域設定用)z-index",
+        verbose_name="(領域設定用)zoom",
         null=True,
         blank=True
     )
