@@ -75,8 +75,9 @@ class RenderDjangoModel(AbstractRender):
             if not attribute["isFK"]:
                 continue
 
-            # ToDo define forein_table
-            if attribute["annotation"] is not None and attribute["annotation"] != "":
+            if self.relationship_set.is_valid_entity_name(attribute_name):
+                e_forein_table = attribute_name
+            elif attribute["annotation"] is not None and attribute["annotation"] != "":
                 e_forein_table = attribute["annotation"].split(" ")[0]
             else:
                 raise RuntimeError(
@@ -85,26 +86,23 @@ class RenderDjangoModel(AbstractRender):
                 continue
 
             for relation_item in myset:
-                c_table_name = relation_item.leaf[1]
-                c_forein_table = relation_item.leaf[0]
-                if table_name != c_table_name:
+                r_table_name = relation_item.leaf[1]
+                r_forein_table = relation_item.leaf[0]
+                if table_name != r_table_name:
                     continue
-                if e_forein_table != c_forein_table:
-                    continue
-                if (
-                    len(relation_item.attribute_name) > 0
-                    and relation_item.attribute_name != attribute_name
-                ):
+                if e_forein_table != r_forein_table:
                     continue
 
                 if self.relationship_set.is_valid_entity_name(attribute_name):
                     related_name = table_name
-                else:
+                elif relation_item.attribute_name == attribute_name:
                     related_name = attribute_name
+                else:
+                    continue
 
                 self.relationship_map[table_name][attribute_name] = {
                     "type": relation_item.type,
-                    "forein_table": c_forein_table,
+                    "forein_table": r_forein_table,
                     "related_name": related_name,
                 }
 
