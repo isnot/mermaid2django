@@ -17,7 +17,7 @@ erDiagram
     story }|--|{ venue : ""
     story }|--|{ place : "ストーリー登場地点"
     %% camera_center_place ストーリー登場地点を含む領域(四角形)の中心座標
-    place |o--|| story : "領域"
+    place |o--|{ story : "領域"
     %% story 単話に登場する地点をルートとして表現する
     story }|--|{ route : "複数あり"
     place ||--|{ step : "訪問"

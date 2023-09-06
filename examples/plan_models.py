@@ -350,12 +350,12 @@ class Story(models.Model):
     """
 
     """camera_center_place (領域設定用) place story このストーリーに登場する主な地点をすべて包含するような範囲(四角形)の中心"""
-    camera_center_place = models.OneToOneField(
+    camera_center_place = models.ForeignKey(
         "Place",
         verbose_name="(領域設定用)",
         related_name="camera_center_place",
         null=True,
-        on_delete=models.CASCADE
+        on_delete=models.DO_NOTHING
     )
     """camera_zoom_level (領域設定用)zoom """
     camera_zoom_level = models.PositiveIntegerField(
