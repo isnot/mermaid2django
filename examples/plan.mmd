@@ -66,15 +66,14 @@ series {
     %% 雑誌連載の誌名か、Web連載のレーベル名称
     char magazine_title "連載誌"
     %% 公式サイトや他のWebサイトから代表するものを1件
-    url site "代表（公式）サイト"
-    %% モデルにはあえてリレーションを定義せず （単方向リスト）
+    url site "代表(公式)サイト"
+    %% モデルにはあえてリレーションを定義せず (単方向リスト)
     int rel_series_id "関係シリーズ"
 }
 
 %% comic 単行本 1巻、2巻、…。単巻のみの場合はseries=NULL [リソース]
 comic {
     serial id PK
-    %% series comic
     rel series FK
     %% 第n巻 作品毎に呼び方のバリエーションがある
     int number "巻数"
@@ -87,14 +86,13 @@ comic {
     date released "書店発売日"
     %% 版元ドットコムの書誌情報DBより
     url cover_image_url "書影url"
-    isbn isbn "ISBN13"
+    char isbn "ISBN13"
     text memo "編集メモ"
 }
 
 %% web_comic Web連載 第1旅(1)、番外旅、一枚モノ、… [リソース]
 web_comic {
     serial id PK
-    %% story web_comic
     rel story FK
     char title "各話の名前"
     int part_number "分割の順列"
@@ -133,15 +131,10 @@ type_master {
 %% fragment その他媒体 表紙カラー、店舗特典、ポスター、別冊、雑誌付録。コミック収録と未収録がある [リソース]
 fragment {
     serial id PK
-    %% story fragment
     rel story FK
-    %% web_comic fragment
     rel web_comic FK
-    %% character fragment
     rel character FK
-    %% place fragment
     rel place FK
-    %% type_master fragment
     rel type_master FK "分類 種別"
     char title "名前"
     url url "参照URL/リンク"
@@ -151,7 +144,7 @@ fragment {
 %% journey 第〇旅、番外旅 [イベント]
 journey {
     serial id PK
-    %% type_master journey 1:本編 2:番外旅 9:その他 ToDo
+    %% type_master 1:本編 2:番外旅 9:その他 ToDo
     rel type_master FK "分類"
     int number "第〇旅"
     char key "記号"
@@ -161,17 +154,14 @@ journey {
 %% story 単行本の単話 第〇旅前編、第〇旅後編。コミック未収録もある [イベント]
 story {
     serial id PK
-    %% magazine story
     rel magazine FK
-    %% comic story
     rel comic FK
-    %% journey story
     rel journey FK
-    %% type_master story 本編、番外旅、おうちで料理 ToDo
+    %% type_master 本編、番外旅、おうちで料理 ToDo
     rel type_master FK "分類"
     char title "単話タイトル"
     char subtitle "サブタイトル"
-    %% place story このストーリーに登場する主な地点をすべて包含するような範囲（四角形）の中心
+    %% place story このストーリーに登場する主な地点をすべて包含するような範囲(四角形)の中心
     rel camera_center_place FK "(領域設定用)"
     int camera_zoom_level "(領域設定用)z-index"
 }
@@ -179,9 +169,8 @@ story {
 %% route 経路 placeを組み合わせて経路とする [リソース]
 route {
     serial id PK
-    %% story route
     rel story FK
-    %% type_master route 鈴ヶ森さんツイ、作者、マップ取り込み、調整済 ToDo
+    %% type_master 鈴ヶ森さんツイ、作者、マップ取り込み、調整済 ToDo
     rel type_master FK "分類"
     char name "名前"
     text memo "編集メモ"
@@ -190,25 +179,18 @@ route {
 %% venue 目的地 会津、松島、那須、… [リソース]
 venue {
     serial id PK
-    %% story venue
     rel story FK
-    %% comic venue
     rel comic FK
-    %% 1:都道府県 2:市区町村 3:番地等の細かい行政界 5:著名観光地 6:ランドマーク、顕著な建造物、施設 7:道、航路、等
-    %% type_master venue ToDo
+    %% type_master 1:都道府県 2:市区町村 3:番地等の細かい行政界 5:著名観光地 6:ランドマーク、顕著な建造物、施設 7:道、航路、等
     rel type_master FK "分類"
     char name "名称"
-
 }
 
 %% place 場所 東京駅の顔出しパネル、登場店舗、宿泊場所、観光名所、施設、交通拠点 [リソース]
 place {
     serial id PK
-    %% venue place
     rel venue FK
-    %% story place
     rel story FK
-    %% character place
     rel character FK
     char name "地点名"
     char latitude "緯度"
@@ -220,9 +202,7 @@ place {
 %% step 訪問 routeに含まれる地点を訪れた日時 [イベント]
 step {
     serial id PK
-    %% route step
     rel route FK
-    %% place step
     rel place FK
     int number "順番"
     datetime datetime "日時"
@@ -231,13 +211,9 @@ step {
 %% scene シーン 名シーン、ざつ旅ARのマーカー [イベント]
 scene {
     serial id PK
-    %% story scene
     rel story FK
-    %% place scene
     rel place FK
-    %% character scene
     rel character FK
-    %% type_master scene ToDo
     rel type_master FK "分類"
     %% コミック掲載ページ
     int page "ページ"
@@ -256,9 +232,7 @@ character {
 %% photo flickr (google place photo api有料) [リソース]
 photo {
     serial id PK
-    %% step photo
     rel step FK
-    %% person photo
     rel person FK
     %% type_master photo 出典別？ ToDo
     rel type_master FK "分類"
@@ -271,9 +245,7 @@ photo {
 %% tweet Twitter 石坂さん、鈴ヶ森さん、読者等、無関係 [リソース]
 tweet {
     serial id PK
-    %% person tweet
     rel person FK
-    %% step tweet
     rel step FK
     %% type_master tweet 鈴ヶ森さん、作者、巡礼・追走、 ToDo
     rel type_master FK "分類"
@@ -284,18 +256,21 @@ tweet {
 %% person コンテンツの作者 ツイート/写真を撮影した人 [リソース]
 person {
     serial id PK
-    %% user person
     rel user FK
     %% type_master person ToDo
     rel type_master FK "分類"
     char name "名前"
-    int type "分類"
     text memo "編集メモ"
 }
 
 %% user ユーザー 利用者 [リソース]
 user {
     serial id PK
+    char username
+    char last_name
+    char first_name
+    char email
+    datetime date_joined
 }
 
 %% role [リソース]
