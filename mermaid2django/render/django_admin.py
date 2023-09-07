@@ -1,3 +1,4 @@
+from mermaid2django.entity import Entity
 from mermaid2django.render.abstract import AbstractRender
 
 
@@ -11,35 +12,43 @@ class RenderDjangoAdmin(AbstractRender):
         render = RenderDjangoAdmin(entities)
         RenderDjangoAdmin.replace_file_content(filename, render.get_admin())
 
-    def __init__(self, all_entities=[]):
-        self.all = sorted(list(map(lambda e: e.get_name().capitalize(), all_entities)))
+    def __init__(self, entities=[]):
+        self.entities = entities
 
     def get_import(self):
+        all = sorted(list(map(lambda e: e.get_name().capitalize(), self.entities)))
         lines = ["from .models import ("]
-        lines.extend(list(map(lambda model: f"    {model},", self.all)))
+        lines.extend(list(map(lambda model: f"    {model},", all)))
         lines.append(")")
         return "\n".join(lines)
 
-    def get_model_admin(self, class_name):
-        class_def = "class {name}Admin(admin.ModelAdmin):".format(name=class_name)
-        lines = [class_def]
-        lines.append(
-            """    fields = ["id"]  # ["name", "title", "type", "memo"]
-    # fieldsets = []
-    # list_filter = ["title"]
-    # search_fields = ["title"]
-    # list_display = ("id", "name", "title")
-    # list_display_links = ("id", "name", "title")
+    def get_template(self):
+        return """    fields = [{fields}]
+    # list_filter = ["type_master", ""]
+    # search_fields = ["title", "name", "memo"]
+    list_display = ("id", {fields})
+    list_display_links = ({fields})
 """
+
+    def get_model_admin(self, class_name, entity: Entity):
+        attr_names = entity.get_attribute_names()
+        fields = ", ".join(
+            map(lambda name: '"{0}"'.format(name) if name != "id" else "", attr_names)
         )
+        class_def = "class {name}Admin(admin.ModelAdmin):".format(
+            name=class_name.capitalize()
+        )
+        lines = [class_def]
+        lines.append(self.get_template().format(fields=fields))
         return "\n".join(lines)
 
     def get_admin(self):
-        buf = self.MODULE_HEADER + "\n\n" + self.get_import() + "\n\n"
-        for name in self.all:
+        buf = self.MODULE_HEADER + "\n\n" + self.get_import() + "\n"
+        for entity in self.entities:
+            name = entity.get_name()
             buf = (
                 buf
-                + "\n\n@admin.register({name})\n".format(name=name)
-                + self.get_model_admin(name)
+                + "\n\n@admin.register({name})\n".format(name=name.capitalize())
+                + self.get_model_admin(name, entity)
             )
         return buf
