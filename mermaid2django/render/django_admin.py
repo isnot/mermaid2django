@@ -33,7 +33,15 @@ class RenderDjangoAdmin(AbstractRender):
     def get_model_admin(self, class_name, entity: Entity):
         attr_names = entity.get_attribute_names()
         fields = ", ".join(
-            map(lambda name: '"{0}"'.format(name) if name != "id" else "", attr_names)
+            filter(
+                lambda item: item is not None,
+                list(
+                    map(
+                        lambda name: '"{0}"'.format(name) if name != "id" else None,
+                        attr_names,
+                    )
+                ),
+            )
         )
         class_def = "class {name}Admin(admin.ModelAdmin):".format(
             name=class_name.capitalize()

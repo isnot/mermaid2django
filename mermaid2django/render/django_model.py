@@ -216,8 +216,9 @@ class {name}(models.Model):
 
     def get_entity_footer(self):
         return """
+
     def __str__(self):
-        return self.id
+        return "{0}".format(self.id)
 """
 
     def get_model(self):
@@ -231,5 +232,6 @@ class {name}(models.Model):
             if attribute == "":
                 continue
             buf += attribute
+        buf += self.get_entity_footer()
 
-        return buf + "\n"
+        return buf
