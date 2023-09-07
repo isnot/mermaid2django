@@ -2,7 +2,14 @@ from mermaid2django.render.abstract import AbstractRender
 
 
 class RenderDjangoAdmin(AbstractRender):
+    DEFAULT_OUTPUT = "./admin.py"
     MODULE_HEADER = "from django.contrib import admin"
+
+    @classmethod
+    def output_file(cls, filename=DEFAULT_OUTPUT, **kwargs):
+        entities = RenderDjangoAdmin.check_args("entities", **kwargs)
+        render = RenderDjangoAdmin(entities)
+        RenderDjangoAdmin.replace_file_content(filename, render.get_admin())
 
     def __init__(self, all_entities=[]):
         self.all = sorted(list(map(lambda e: e.get_name().capitalize(), all_entities)))

@@ -45,10 +45,9 @@ class RenderCsv(AbstractRender):
         return "✔" if bool else ""
 
     @classmethod
-    def output_file(cls, entities, filename=""):
-        if filename is None or filename == "":
-            filename = RenderCsv.DEFAULT_OUTPUT
-        render = RenderCsv(entities)
+    def output_file(cls, filename=DEFAULT_OUTPUT, **kwargs):
+        entities_dict = RenderCsv.check_args("entities_dict", **kwargs)
+        render = RenderCsv(entities_dict)
         RenderCsv.replace_file_content(filename, render.get_csv())
 
     def __init__(self, entities={}):

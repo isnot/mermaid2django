@@ -4,6 +4,8 @@ from mermaid2django.render.abstract import AbstractRender
 
 
 class RenderDjangoModel(AbstractRender):
+    DEFAULT_OUTPUT = "./models.py"
+    MODULE_HEADER = "from django.db import models"
     FIELD_OPTIONS = {
         "int": (
             'verbose_name="{verbose}",',
@@ -54,8 +56,31 @@ class RenderDjangoModel(AbstractRender):
         ),
         "many2many": tuple(),
     }
-    MODULE_HEADER = "from django.db import models"
-    # null=True, blank=True, default=''
+    # null=True, blank=True, default=""
+
+    @classmethod
+    def output_file(cls, filename=DEFAULT_OUTPUT, **kwargs):
+        entities = RenderDjangoModel.check_args("entities", **kwargs)
+        task = RenderDjangoModel.check_args("parser", **kwargs)
+
+        entitiy_renders = {}
+        buf = RenderDjangoModel.MODULE_HEADER + "\n"
+
+        for entity in entities:
+            name = entity.get_name()
+            render = RenderDjangoModel(entity, task.get_relationship_set())
+            entitiy_renders[name] = render
+            render.setup_relationship_map()
+
+        for entity in entities:
+            name = entity.get_name()
+            render = entitiy_renders[name]
+            tmp = render.get_model()
+            if tmp is None or tmp == "":
+                continue
+            buf += tmp
+
+        RenderDjangoModel.replace_file_content(filename, buf)
 
     def __init__(self, entity: Entity, relationship_set: RelationshipSet):
         self.entity = entity
