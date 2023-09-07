@@ -44,6 +44,13 @@ class RenderCsv(AbstractRender):
     def bool2str(bool):
         return "✔" if bool else ""
 
+    @classmethod
+    def output_file(cls, entities, filename=""):
+        if filename is None or filename == "":
+            filename = RenderCsv.DEFAULT_OUTPUT
+        render = RenderCsv(entities)
+        RenderCsv.replace_file_content(filename, render.get_csv())
+
     def __init__(self, entities={}):
         self.entities = entities
         self.entity_names = sorted(list(entities.keys()))
@@ -58,13 +65,16 @@ class RenderCsv(AbstractRender):
         num = len(output)
         if num > num_of_cols:
             raise RuntimeError("out of range for list extends")
-        while num > num_of_cols:
-            output.extend([""])
-            num = num(output)
+        elif num < num_of_cols:
+            output.extend([""] * (num_of_cols - num))
         return output
 
     def get_empty_line(self):
         return self.SEPARATOR_COL.join(self.extend_list([])) + self.SEPARATOR_ROW
+
+    def get_entity_header(self):
+        header = self.SEPARATOR_COL.join(self.extend_list(self.ENTITY_HEAD))
+        return header
 
     def get_header(self):
         header = self.SEPARATOR_COL.join(self.extend_list(self.HEADER[0]))
@@ -77,10 +87,7 @@ class RenderCsv(AbstractRender):
             lines_index += 1
             entity: Entity = self.entities[entity_name]
             entity_desc = entity.get_description()
-            (
-                _,
-                desc,
-            ) = entity_desc.split(sep=" ", maxsplit=1)
+            desc = entity_desc.split(sep=" ", maxsplit=1)[1]
             cols = [
                 str(lines_index),  # "No",
                 entity_name,  # "物理名",
@@ -101,10 +108,6 @@ class RenderCsv(AbstractRender):
                 self.get_empty_line(),
             ]
         )
-
-    def get_entity_header(self):
-        header = self.SEPARATOR_COL.join(self.extend_list(self.ENTITY_HEAD))
-        return header
 
     def get_entity_csv(self, entity_name):
         entity: Entity = self.entities[entity_name]
@@ -136,13 +139,6 @@ class RenderCsv(AbstractRender):
     def get_csv(self):
         buf = self.get_header()
         buf += self.get_empty_line()
-        for entity in self.entity_names:
-            buf += self.get_entity_csv(entity)
+        for entity_name in self.entity_names:
+            buf += self.get_entity_csv(entity_name)
         return buf
-
-
-def csv_maker(entities, filename=""):
-    if filename is None or filename == "":
-        filename = RenderCsv.DEFAULT_OUTPUT
-    render = RenderCsv(entities)
-    RenderCsv.replace_file_content(filename, render.get_csv())
