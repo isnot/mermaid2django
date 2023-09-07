@@ -60,6 +60,9 @@ class Series(models.Model):
         blank=True
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class Comic(models.Model):
     """ comic 単行本 1巻、2巻、…。単巻のみの場合はseries=NULL [リソース]
@@ -122,6 +125,9 @@ class Comic(models.Model):
         blank=True
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class Web_comic(models.Model):
     """ web_comic Web連載 第1旅(1)、番外旅、一枚モノ、… [リソース]
@@ -182,6 +188,9 @@ class Web_comic(models.Model):
         blank=True
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class Magazine(models.Model):
     """ magazine 雑誌連載 マオウ [イベント]
@@ -225,6 +234,9 @@ class Magazine(models.Model):
         blank=True
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class Type_master(models.Model):
     """ type_master 分類型の項目の選択肢マスター [リソース]
@@ -251,6 +263,9 @@ class Type_master(models.Model):
         null=True,
         blank=True
     )
+
+    def __str__(self):
+        return "{0}".format(self.id)
 
 
 class Fragment(models.Model):
@@ -311,6 +326,9 @@ class Fragment(models.Model):
         on_delete=models.DO_NOTHING
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class Journey(models.Model):
     """ journey 第〇旅、番外旅 [イベント]
@@ -343,6 +361,9 @@ class Journey(models.Model):
         null=True,
         on_delete=models.DO_NOTHING
     )
+
+    def __str__(self):
+        return "{0}".format(self.id)
 
 
 class Story(models.Model):
@@ -407,6 +428,9 @@ class Story(models.Model):
         on_delete=models.DO_NOTHING
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class Route(models.Model):
     """ route 経路 placeを組み合わせて経路とする [リソース]
@@ -439,6 +463,9 @@ class Route(models.Model):
         on_delete=models.DO_NOTHING
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class Venue(models.Model):
     """ venue 目的地 会津、松島、那須、… [リソース]
@@ -469,6 +496,9 @@ class Venue(models.Model):
         null=True,
         on_delete=models.DO_NOTHING
     )
+
+    def __str__(self):
+        return "{0}".format(self.id)
 
 
 class Place(models.Model):
@@ -527,6 +557,9 @@ class Place(models.Model):
         on_delete=models.DO_NOTHING
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class Step(models.Model):
     """ step 訪問 routeに含まれる地点を訪れた日時 [イベント]
@@ -557,6 +590,9 @@ class Step(models.Model):
         null=True,
         on_delete=models.DO_NOTHING
     )
+
+    def __str__(self):
+        return "{0}".format(self.id)
 
 
 class Scene(models.Model):
@@ -603,6 +639,9 @@ class Scene(models.Model):
         on_delete=models.DO_NOTHING
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class Character(models.Model):
     """ character キャラクター 主要5人、編集部、他 [リソース]
@@ -629,6 +668,9 @@ class Character(models.Model):
         null=True,
         on_delete=models.DO_NOTHING
     )
+
+    def __str__(self):
+        return "{0}".format(self.id)
 
 
 class Photo(models.Model):
@@ -683,6 +725,9 @@ class Photo(models.Model):
         blank=True
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class Tweet(models.Model):
     """ tweet Twitter 石坂さん、鈴ヶ森さん、読者等、無関係 [リソース]
@@ -723,6 +768,9 @@ class Tweet(models.Model):
         blank=True
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class Person(models.Model):
     """ person コンテンツの作者 ツイート/写真を撮影した人 [リソース]
@@ -757,6 +805,9 @@ class Person(models.Model):
         on_delete=models.CASCADE
     )
 
+    def __str__(self):
+        return "{0}".format(self.id)
+
 
 class User(models.Model):
     """ user ユーザー 利用者 [リソース]
@@ -790,3 +841,6 @@ class User(models.Model):
         null=True,
         blank=True
     )
+
+    def __str__(self):
+        return "{0}".format(self.id)
