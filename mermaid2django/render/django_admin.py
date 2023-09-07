@@ -22,32 +22,29 @@ class RenderDjangoAdmin(AbstractRender):
         lines.append(")")
         return "\n".join(lines)
 
+    def get_fields(self, entity: Entity):
+        items = []
+        for name in entity.get_attribute_names():
+            attr = entity.get_attribute(name)
+            if name == "id" or attr["type"] == "rel":
+                continue
+            items.append('"{0}"'.format(name))
+        return ", ".join(items)
+
     def get_template(self):
         return """    fields = [{fields}]
     # list_filter = ["type_master", ""]
     # search_fields = ["title", "name", "memo"]
-    list_display = ("id", {fields})
-    list_display_links = ({fields})
+    list_display = ("id", {fields},)
+    list_display_links = ({fields},)
 """
 
     def get_model_admin(self, class_name, entity: Entity):
-        attr_names = entity.get_attribute_names()
-        fields = ", ".join(
-            filter(
-                lambda item: item is not None,
-                list(
-                    map(
-                        lambda name: '"{0}"'.format(name) if name != "id" else None,
-                        attr_names,
-                    )
-                ),
-            )
-        )
         class_def = "class {name}Admin(admin.ModelAdmin):".format(
             name=class_name.capitalize()
         )
         lines = [class_def]
-        lines.append(self.get_template().format(fields=fields))
+        lines.append(self.get_template().format(fields=self.get_fields(entity)))
         return "\n".join(lines)
 
     def get_admin(self):
