@@ -10,6 +10,6 @@ output_csv = "./dist/database.tsv"
 
 task = ParseMermaidErDiagram(input_mermaid)
 entities = task.parse()
-RenderDjangoAdmin.output_file(filename=output_admin, entities=entities)
+RenderDjangoAdmin.output_file(filename=output_admin, entities=entities, parser=task)
 RenderDjangoModel.output_file(filename=output_model, entities=entities, parser=task)
 RenderCsv.output_file(filename=output_csv, entities_dict=task.get_entities(via="dict"))

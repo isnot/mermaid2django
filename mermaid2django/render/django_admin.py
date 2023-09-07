@@ -1,4 +1,5 @@
 from mermaid2django.entity import Entity
+from mermaid2django.relationship import RelationshipSet
 from mermaid2django.render.abstract import AbstractRender
 
 
@@ -9,11 +10,13 @@ class RenderDjangoAdmin(AbstractRender):
     @classmethod
     def output_file(cls, filename=DEFAULT_OUTPUT, **kwargs):
         entities = RenderDjangoAdmin.check_args("entities", **kwargs)
-        render = RenderDjangoAdmin(entities)
+        task = RenderDjangoAdmin.check_args("parser", **kwargs)
+        render = RenderDjangoAdmin(entities, task.get_relationship_set())
         RenderDjangoAdmin.replace_file_content(filename, render.get_admin())
 
-    def __init__(self, entities=[]):
+    def __init__(self, entities, relationship_set: RelationshipSet):
         self.entities = entities
+        self.relationship_set = relationship_set
 
     def get_import(self):
         all = sorted(list(map(lambda e: e.get_name().capitalize(), self.entities)))
