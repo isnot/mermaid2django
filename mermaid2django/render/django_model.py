@@ -17,69 +17,69 @@ class RenderDjangoModel(AbstractRender):
     FIELD_OPTIONS = {
         "int": (
             'verbose_name="{verbose}",',
-            'help_text="{annotation}"',
+            'help_text="{annotation}",',
             "null=True,",
             "blank=True",
         ),
         "decimal": (
             'verbose_name="{verbose}",',
-            'help_text="{annotation}"',
-            "max_digits=9",
-            "decimal_places=6",
+            'help_text="{annotation}",',
+            "max_digits=9,",
+            "decimal_places=6,",
             "null=True,",
             "blank=True",
         ),
         "bool": (
             'verbose_name="{verbose}",',
-            'help_text="{annotation}"',
+            'help_text="{annotation}",',
             "null=True,",
             "blank=True",
         ),
         "char": (
             'verbose_name="{verbose}",',
-            'help_text="{annotation}"',
+            'help_text="{annotation}",',
             "max_length=255,",
             "null=True,",
             "blank=True",
         ),
         "text": (
             'verbose_name="{verbose}",',
-            'help_text="{annotation}"',
+            'help_text="{annotation}",',
             "null=True,",
             "blank=True",
         ),
         "url": (
             'verbose_name="{verbose}",',
-            'help_text="{annotation}"',
+            'help_text="{annotation}",',
             "null=True,",
             "blank=True",
         ),
         "email": (
             'verbose_name="{verbose}",',
-            'help_text="{annotation}"',
+            'help_text="{annotation}",',
             "null=True,",
             "blank=True",
         ),
         "isbn": (
             'verbose_name="{verbose}",',
-            'help_text="{annotation}"',
+            'help_text="{annotation}",',
             "null=True,",
             "blank=True",
         ),
         "date": (
             'verbose_name="{verbose}",',
-            'help_text="{annotation}"',
+            'help_text="{annotation}",',
             "null=True",
         ),
         "datetime": (
             'verbose_name="{verbose}",',
-            'help_text="{annotation}"',
+            'help_text="{annotation}",',
             "null=True",
         ),
         "rel": (
             '"{relation}",',
             'verbose_name="{verbose}",',
-            'help_text="{annotation}"',
+            'help_text="{annotation}",',
             'related_name="{related_name}",',
         ),
         "one2many": (
@@ -174,8 +174,8 @@ class RenderDjangoModel(AbstractRender):
         options = list(map(lambda line: "    " + line, options))
 
         template = [
-            "\n    {mark}{name} {verbose} {annotation}{mark}",
-            "{name} = models.{model_type}(",
+            # "    {mark}{name} {verbose}{mark}",
+            "\n    {name} = models.{model_type}(",
         ]
         template.extend(options)
         template.append(")")
@@ -249,7 +249,7 @@ class {name}(models.Model):
         return """
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 """
 
     def get_model(self):
