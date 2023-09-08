@@ -32,6 +32,10 @@ class RenderDjangoAdmin(AbstractRender):
             if name == "id" or attr["type"] == "rel":
                 continue
             items.append('"{0}"'.format(name))
+        rels = self.relationship_set.find_by_entity_name(entity.get_name())
+        for rel in rels:
+            if rel.type != "many2many" and rel.leaf[1] == entity.get_name():
+                items.append('"{0}"'.format(rel.leaf[0]))
         return ", ".join(items)
 
     def get_template(self):
