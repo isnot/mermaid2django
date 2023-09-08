@@ -135,7 +135,8 @@ fragment {
     rel web_comic FK
     rel character FK
     rel place FK
-    rel type_master FK "分類 種別"
+    %% type_master fragment
+    rel type_master FK "分類"
     char title "名前"
     url url "参照URL/リンク"
     text memo "編集メモ"
@@ -144,7 +145,7 @@ fragment {
 %% journey 第〇旅、番外旅 [イベント]
 journey {
     serial id PK
-    %% type_master 1:本編 2:番外旅 9:その他 ToDo
+    %% type_master journey
     rel type_master FK "分類"
     int number "第〇旅"
     char key "記号"
@@ -157,7 +158,7 @@ story {
     rel magazine FK
     rel comic FK
     rel journey FK
-    %% type_master 本編、番外旅、おうちで料理 ToDo
+    %% type_master story
     rel type_master FK "分類"
     char title "単話タイトル"
     char subtitle "サブタイトル"
@@ -170,7 +171,7 @@ story {
 route {
     serial id PK
     rel story FK
-    %% type_master 鈴ヶ森さんツイ、作者、マップ取り込み、調整済 ToDo
+    %% type_master route
     rel type_master FK "分類"
     char name "名前"
     text memo "編集メモ"
@@ -181,7 +182,7 @@ venue {
     serial id PK
     rel story FK
     rel comic FK
-    %% type_master 1:都道府県 2:市区町村 3:番地等の細かい行政界 5:著名観光地 6:ランドマーク、顕著な建造物、施設 7:道、航路、等
+    %% type_master venue
     rel type_master FK "分類"
     char name "名称"
 }
@@ -214,6 +215,7 @@ scene {
     rel story FK
     rel place FK
     rel character FK
+    %% type_master scene
     rel type_master FK "分類"
     %% コミック掲載ページ
     int page "ページ"
@@ -223,7 +225,7 @@ scene {
 %% character キャラクター 主要5人、編集部、他 [リソース]
 character {
     serial id PK
-    %% type_master character ToDo
+    %% type_master character
     rel type_master FK "分類"
     char name "名前"
     text description "紹介文"
@@ -234,7 +236,7 @@ photo {
     serial id PK
     rel step FK
     rel person FK
-    %% type_master photo 出典別？ ToDo
+    %% type_master photo
     rel type_master FK "分類"
     char title "タイトル"
     url url "参照URL"
@@ -247,7 +249,7 @@ tweet {
     serial id PK
     rel person FK
     rel step FK
-    %% type_master tweet 鈴ヶ森さん、作者、巡礼・追走、 ToDo
+    %% type_master tweet
     rel type_master FK "分類"
     url url "固定URL"
     text description "内容"
@@ -257,7 +259,7 @@ tweet {
 person {
     serial id PK
     rel user FK
-    %% type_master person ToDo
+    %% type_master person
     rel type_master FK "分類"
     char name "名前"
     text memo "編集メモ"

@@ -318,8 +318,8 @@ class Fragment(models.Model):
     )
     type_master = models.ForeignKey(
         "Type_master",
-        verbose_name="分類 種別",
-        help_text="",
+        verbose_name="分類",
+        help_text="type_master fragment",
         related_name="fragment",
         null=True,
         on_delete=models.DO_NOTHING
@@ -370,7 +370,7 @@ class Journey(models.Model):
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
-        help_text="type_master 1:本編 2:番外旅 9:その他 ToDo",
+        help_text="type_master journey",
         related_name="journey",
         null=True,
         on_delete=models.DO_NOTHING
@@ -438,7 +438,7 @@ class Story(models.Model):
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
-        help_text="type_master 本編、番外旅、おうちで料理 ToDo",
+        help_text="type_master story",
         related_name="story",
         null=True,
         on_delete=models.DO_NOTHING
@@ -475,7 +475,7 @@ class Route(models.Model):
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
-        help_text="type_master 鈴ヶ森さんツイ、作者、マップ取り込み、調整済 ToDo",
+        help_text="type_master route",
         related_name="route",
         null=True,
         on_delete=models.DO_NOTHING
@@ -511,7 +511,7 @@ class Venue(models.Model):
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
-        help_text="type_master 1:都道府県 2:市区町村 3:番地等の細かい行政界 5:著名観光地 6:ランドマーク、顕著な建造物、施設 7:道、航路、等",
+        help_text="type_master venue",
         related_name="venue",
         null=True,
         on_delete=models.DO_NOTHING
@@ -662,7 +662,7 @@ class Scene(models.Model):
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
-        help_text="",
+        help_text="type_master scene",
         related_name="scene",
         null=True,
         on_delete=models.DO_NOTHING
@@ -694,7 +694,7 @@ class Character(models.Model):
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
-        help_text="type_master character ToDo",
+        help_text="type_master character",
         related_name="character",
         null=True,
         on_delete=models.DO_NOTHING
@@ -740,7 +740,7 @@ class Photo(models.Model):
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
-        help_text="type_master photo 出典別？ ToDo",
+        help_text="type_master photo",
         related_name="photo",
         null=True,
         on_delete=models.DO_NOTHING
@@ -791,7 +791,7 @@ class Tweet(models.Model):
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
-        help_text="type_master tweet 鈴ヶ森さん、作者、巡礼・追走、 ToDo",
+        help_text="type_master tweet",
         related_name="tweet",
         null=True,
         on_delete=models.DO_NOTHING
@@ -829,7 +829,7 @@ class Person(models.Model):
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
-        help_text="type_master person ToDo",
+        help_text="type_master person",
         related_name="person",
         null=True,
         on_delete=models.DO_NOTHING

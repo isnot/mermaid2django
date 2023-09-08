@@ -168,11 +168,11 @@ class TweetAdmin(admin.ModelAdmin):
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
-    fields = ["memo", "name", "user", "type_master"]
+    fields = ["memo", "name", "type_master", "user"]
     # list_filter = ["type_master", ""]
     # search_fields = ["title", "name", "memo"]
-    list_display = ("id", "memo", "name", "user", "type_master",)
-    list_display_links = ("memo", "name", "user", "type_master",)
+    list_display = ("id", "memo", "name", "type_master", "user",)
+    list_display_links = ("memo", "name", "type_master", "user",)
 
 
 @admin.register(User)
