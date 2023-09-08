@@ -2,845 +2,884 @@ from django.db import models
 
 
 class Series(models.Model):
-    """ series 正シリーズと番外シリーズは、別々に登録する ※巻数が自然数の順列になる [リソース]
-    """
+    class Meta:
+        db_table_comment = "series 正シリーズと番外シリーズは、別々に登録する ※巻数が自然数の順列になる [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """author 著者名 著者複数名の場合は、代表者をカンマ区切りで列挙する"""
     author = models.CharField(
         verbose_name="著者名",
+        help_text="著者複数名の場合は、代表者をカンマ区切りで列挙する",
         max_length=255,
         null=True,
         blank=True
     )
-    """label レーベル コミック・シリーズのレーベル名称 例：電撃コミックスNEXT"""
     label = models.CharField(
         verbose_name="レーベル",
+        help_text="コミック・シリーズのレーベル名称 例：電撃コミックスNEXT",
         max_length=255,
         null=True,
         blank=True
     )
-    """magazine_title 連載誌 雑誌連載の誌名か、Web連載のレーベル名称"""
     magazine_title = models.CharField(
         verbose_name="連載誌",
+        help_text="雑誌連載の誌名か、Web連載のレーベル名称",
         max_length=255,
         null=True,
         blank=True
     )
-    """publisher 出版社 出版社 例：KADOKAWA"""
     publisher = models.CharField(
         verbose_name="出版社",
+        help_text="出版社 例：KADOKAWA",
         max_length=255,
         null=True,
         blank=True
     )
-    """rel_series_id 関係シリーズ モデルにはあえてリレーションを定義せず (単方向リスト)"""
     rel_series_id = models.PositiveIntegerField(
         verbose_name="関係シリーズ",
+        help_text="モデルにはあえてリレーションを定義せず (単方向リスト)",
         null=True,
         blank=True
     )
-    """short_title 略称 略称や通称で代表的なもの"""
     short_title = models.CharField(
         verbose_name="略称",
+        help_text="略称や通称で代表的なもの",
         max_length=255,
         null=True,
         blank=True
     )
-    """site 代表(公式)サイト 公式サイトや他のWebサイトから代表するものを1件"""
     site = models.URLField(
         verbose_name="代表(公式)サイト",
+        help_text="公式サイトや他のWebサイトから代表するものを1件",
         null=True,
         blank=True
     )
-    """title 作品名 正確な作品の名称"""
     title = models.CharField(
         verbose_name="作品名",
+        help_text="正確な作品の名称",
         max_length=255,
         null=True,
         blank=True
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Comic(models.Model):
-    """ comic 単行本 1巻、2巻、…。単巻のみの場合はseries=NULL [リソース]
-    """
+    class Meta:
+        db_table_comment = "comic 単行本 1巻、2巻、…。単巻のみの場合はseries=NULL [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """cover_image_url 書影url 版元ドットコムの書誌情報DBより"""
     cover_image_url = models.URLField(
         verbose_name="書影url",
+        help_text="版元ドットコムの書誌情報DBより",
         null=True,
         blank=True
     )
-    """isbn ISBN13 """
     isbn = models.CharField(
         verbose_name="ISBN13",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """issued 発行日 巻末の奥付にある、初版発行日"""
     issued = models.DateField(
         verbose_name="発行日",
+        help_text="巻末の奥付にある、初版発行日",
         null=True
     )
-    """memo 編集メモ """
     memo = models.TextField(
         verbose_name="編集メモ",
+        help_text="",
         null=True,
         blank=True
     )
-    """number 巻数 第n巻 作品毎に呼び方のバリエーションがある"""
     number = models.PositiveIntegerField(
         verbose_name="巻数",
+        help_text="第n巻 作品毎に呼び方のバリエーションがある",
         null=True,
         blank=True
     )
-    """obi オビ 特徴的な帯の文言"""
     obi = models.CharField(
         verbose_name="オビ",
+        help_text="特徴的な帯の文言",
         max_length=255,
         null=True,
         blank=True
     )
-    """released 書店発売日 """
     released = models.DateField(
         verbose_name="書店発売日",
+        help_text="",
         null=True
     )
-    """series  """
     series = models.ForeignKey(
         "Series",
+        help_text="",
         related_name="comic",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """title 各巻タイトル 例：ざつ旅-That's Journey- 1"""
     title = models.CharField(
         verbose_name="各巻タイトル",
+        help_text="例：ざつ旅-That's Journey- 1",
         max_length=255,
         null=True,
         blank=True
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Web_comic(models.Model):
-    """ web_comic Web連載 第1旅(1)、番外旅、一枚モノ、… [リソース]
-    """
+    class Meta:
+        db_table_comment = "web_comic Web連載 第1旅(1)、番外旅、一枚モノ、… [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """cw_published CW公開日 """
     cw_published = models.DateField(
         verbose_name="CW公開日",
+        help_text="",
         null=True
     )
-    """cw_url Comic Walkerリンク """
     cw_url = models.URLField(
         verbose_name="Comic Walkerリンク",
+        help_text="",
         null=True,
         blank=True
     )
-    """memo 編集メモ """
     memo = models.TextField(
         verbose_name="編集メモ",
+        help_text="",
         null=True,
         blank=True
     )
-    """nico_published nico公開日 """
     nico_published = models.DateField(
         verbose_name="nico公開日",
+        help_text="",
         null=True
     )
-    """nico_url ニコニコ静画リンク """
     nico_url = models.URLField(
         verbose_name="ニコニコ静画リンク",
+        help_text="",
         null=True,
         blank=True
     )
-    """pages ページ数 """
     pages = models.PositiveIntegerField(
         verbose_name="ページ数",
+        help_text="",
         null=True,
         blank=True
     )
-    """part_number 分割の順列 """
     part_number = models.PositiveIntegerField(
         verbose_name="分割の順列",
+        help_text="",
         null=True,
         blank=True
     )
-    """story  """
     story = models.ForeignKey(
         "Story",
+        help_text="",
         related_name="web_comic",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """title 各話の名前 """
     title = models.CharField(
         verbose_name="各話の名前",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Magazine(models.Model):
-    """ magazine 雑誌連載 マオウ [イベント]
-    """
+    class Meta:
+        db_table_comment = "magazine 雑誌連載 マオウ [イベント]"
+        # ordering = []
+        # get_latest_by = []
 
-    """cover_image 雑誌表紙 https://dengekimaoh.jp/archives/008/202208/941abdc5a8102a20bb186ae99e37f234c96e5209270d10b52c0293a2419db042.jpg"""
     cover_image = models.URLField(
         verbose_name="雑誌表紙",
+        help_text="https://dengekimaoh.jp/archives/008/202208/941abdc5a8102a20bb186ae99e37f234c96e5209270d10b52c0293a2419db042.jpg",
         null=True,
         blank=True
     )
-    """memo 編集メモ """
     memo = models.TextField(
         verbose_name="編集メモ",
+        help_text="",
         null=True,
         blank=True
     )
-    """released 発売日 書店等での発売日 ※タイトルの月の2か月前27日前後"""
     released = models.DateField(
         verbose_name="発売日",
+        help_text="書店等での発売日 ※タイトルの月の2か月前27日前後",
         null=True
     )
-    """site 雑誌リンク https://dengekimaoh.jp/magazine/magazine-12240.html"""
     site = models.URLField(
         verbose_name="雑誌リンク",
+        help_text="https://dengekimaoh.jp/magazine/magazine-12240.html",
         null=True,
         blank=True
     )
-    """tag_line 管理用タグ 表紙や付録になった号、などを表すタグ"""
     tag_line = models.CharField(
         verbose_name="管理用タグ",
+        help_text="表紙や付録になった号、などを表すタグ",
         max_length=255,
         null=True,
         blank=True
     )
-    """title タイトル 雑誌のタイトル 例：電撃マオウ 2020年1月号"""
     title = models.CharField(
         verbose_name="タイトル",
+        help_text="雑誌のタイトル 例：電撃マオウ 2020年1月号",
         max_length=255,
         null=True,
         blank=True
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Type_master(models.Model):
-    """ type_master 分類型の項目の選択肢マスター [リソース]
-    """
+    class Meta:
+        db_table_comment = "type_master 分類型の項目の選択肢マスター [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """key 属性 """
     key = models.CharField(
         verbose_name="属性",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """name 参照名 """
     name = models.CharField(
         verbose_name="参照名",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """value 値 """
     value = models.CharField(
         verbose_name="値",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Fragment(models.Model):
-    """ fragment その他媒体 表紙カラー、店舗特典、ポスター、別冊、雑誌付録。コミック収録と未収録がある [リソース]
-    """
+    class Meta:
+        db_table_comment = "fragment その他媒体 表紙カラー、店舗特典、ポスター、別冊、雑誌付録。コミック収録と未収録がある [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """character  """
     character = models.ManyToManyField(
         "Character",
+        help_text="",
         related_name="fragment",
     )
-    """memo 編集メモ """
     memo = models.TextField(
         verbose_name="編集メモ",
+        help_text="",
         null=True,
         blank=True
     )
-    """place  """
     place = models.ForeignKey(
         "Place",
+        help_text="",
         related_name="fragment",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """story  """
     story = models.ForeignKey(
         "Story",
+        help_text="",
         related_name="fragment",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """title 名前 """
     title = models.CharField(
         verbose_name="名前",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """type_master 分類 種別 """
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類 種別",
+        help_text="",
         related_name="fragment",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """url 参照URL/リンク """
     url = models.URLField(
         verbose_name="参照URL/リンク",
+        help_text="",
         null=True,
         blank=True
     )
-    """web_comic  """
     web_comic = models.ForeignKey(
         "Web_comic",
+        help_text="",
         related_name="fragment",
         null=True,
         on_delete=models.DO_NOTHING
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Journey(models.Model):
-    """ journey 第〇旅、番外旅 [イベント]
-    """
+    class Meta:
+        db_table_comment = "journey 第〇旅、番外旅 [イベント]"
+        # ordering = []
+        # get_latest_by = []
 
-    """key 記号 """
     key = models.CharField(
         verbose_name="記号",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """memo 編集メモ """
     memo = models.TextField(
         verbose_name="編集メモ",
+        help_text="",
         null=True,
         blank=True
     )
-    """number 第〇旅 """
     number = models.PositiveIntegerField(
         verbose_name="第〇旅",
+        help_text="",
         null=True,
         blank=True
     )
-    """type_master 分類 type_master 1:本編 2:番外旅 9:その他 ToDo"""
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
+        help_text="type_master 1:本編 2:番外旅 9:その他 ToDo",
         related_name="journey",
         null=True,
         on_delete=models.DO_NOTHING
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Story(models.Model):
-    """ story 単行本の単話 第〇旅前編、第〇旅後編。コミック未収録もある [イベント]
-    """
+    class Meta:
+        db_table_comment = "story 単行本の単話 第〇旅前編、第〇旅後編。コミック未収録もある [イベント]"
+        # ordering = []
+        # get_latest_by = []
 
-    """camera_center_place (領域設定用) place story このストーリーに登場する主な地点をすべて包含するような範囲(四角形)の中心"""
     camera_center_place = models.ForeignKey(
         "Place",
         verbose_name="(領域設定用)",
+        help_text="place story このストーリーに登場する主な地点をすべて包含するような範囲(四角形)の中心",
         related_name="camera_center_place",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """camera_zoom_level (領域設定用)zoom """
     camera_zoom_level = models.PositiveIntegerField(
         verbose_name="(領域設定用)zoom",
+        help_text="",
         null=True,
         blank=True
     )
-    """comic  """
     comic = models.ForeignKey(
         "Comic",
+        help_text="",
         related_name="story",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """journey  """
     journey = models.ForeignKey(
         "Journey",
+        help_text="",
         related_name="story",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """magazine  """
     magazine = models.OneToOneField(
         "Magazine",
+        help_text="",
         related_name="story",
         null=True,
         on_delete=models.CASCADE
     )
-    """subtitle サブタイトル """
     subtitle = models.CharField(
         verbose_name="サブタイトル",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """title 単話タイトル """
     title = models.CharField(
         verbose_name="単話タイトル",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """type_master 分類 type_master 本編、番外旅、おうちで料理 ToDo"""
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
+        help_text="type_master 本編、番外旅、おうちで料理 ToDo",
         related_name="story",
         null=True,
         on_delete=models.DO_NOTHING
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Route(models.Model):
-    """ route 経路 placeを組み合わせて経路とする [リソース]
-    """
+    class Meta:
+        db_table_comment = "route 経路 placeを組み合わせて経路とする [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """memo 編集メモ """
     memo = models.TextField(
         verbose_name="編集メモ",
+        help_text="",
         null=True,
         blank=True
     )
-    """name 名前 """
     name = models.CharField(
         verbose_name="名前",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """story  """
     story = models.ManyToManyField(
         "Story",
+        help_text="",
         related_name="route",
     )
-    """type_master 分類 type_master 鈴ヶ森さんツイ、作者、マップ取り込み、調整済 ToDo"""
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
+        help_text="type_master 鈴ヶ森さんツイ、作者、マップ取り込み、調整済 ToDo",
         related_name="route",
         null=True,
         on_delete=models.DO_NOTHING
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Venue(models.Model):
-    """ venue 目的地 会津、松島、那須、… [リソース]
-    """
+    class Meta:
+        db_table_comment = "venue 目的地 会津、松島、那須、… [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """comic  """
     comic = models.ManyToManyField(
         "Comic",
+        help_text="",
         related_name="venue",
     )
-    """name 名称 """
     name = models.CharField(
         verbose_name="名称",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """story  """
     story = models.ManyToManyField(
         "Story",
+        help_text="",
         related_name="venue",
     )
-    """type_master 分類 type_master 1:都道府県 2:市区町村 3:番地等の細かい行政界 5:著名観光地 6:ランドマーク、顕著な建造物、施設 7:道、航路、等"""
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
+        help_text="type_master 1:都道府県 2:市区町村 3:番地等の細かい行政界 5:著名観光地 6:ランドマーク、顕著な建造物、施設 7:道、航路、等",
         related_name="venue",
         null=True,
         on_delete=models.DO_NOTHING
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Place(models.Model):
-    """ place 場所 東京駅の顔出しパネル、登場店舗、宿泊場所、観光名所、施設、交通拠点 [リソース]
-    """
+    class Meta:
+        db_table_comment = "place 場所 東京駅の顔出しパネル、登場店舗、宿泊場所、観光名所、施設、交通拠点 [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """altitude 高度 """
-    altitude = models.CharField(
+    altitude = models.DecimalField(
         verbose_name="高度",
-        max_length=255,
+        help_text="",
+        max_digits=9,
+        decimal_places=6,
         null=True,
         blank=True
     )
-    """character  """
     character = models.ManyToManyField(
         "Character",
+        help_text="",
         related_name="place",
     )
-    """latitude 緯度 """
-    latitude = models.CharField(
+    latitude = models.DecimalField(
         verbose_name="緯度",
-        max_length=255,
+        help_text="",
+        max_digits=9,
+        decimal_places=6,
         null=True,
         blank=True
     )
-    """longitude 経度 """
-    longitude = models.CharField(
+    longitude = models.DecimalField(
         verbose_name="経度",
-        max_length=255,
+        help_text="",
+        max_digits=9,
+        decimal_places=6,
         null=True,
         blank=True
     )
-    """memo 編集メモ """
     memo = models.TextField(
         verbose_name="編集メモ",
+        help_text="",
         null=True,
         blank=True
     )
-    """name 地点名 """
     name = models.CharField(
         verbose_name="地点名",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """story  """
     story = models.ManyToManyField(
         "Story",
+        help_text="",
         related_name="place",
     )
-    """venue  """
     venue = models.ForeignKey(
         "Venue",
+        help_text="",
         related_name="place",
         null=True,
         on_delete=models.DO_NOTHING
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Step(models.Model):
-    """ step 訪問 routeに含まれる地点を訪れた日時 [イベント]
-    """
+    class Meta:
+        db_table_comment = "step 訪問 routeに含まれる地点を訪れた日時 [イベント]"
+        # ordering = []
+        # get_latest_by = []
 
-    """datetime 日時 """
     datetime = models.DateTimeField(
         verbose_name="日時",
+        help_text="",
         null=True
     )
-    """number 順番 """
     number = models.PositiveIntegerField(
         verbose_name="順番",
+        help_text="",
         null=True,
         blank=True
     )
-    """place  """
     place = models.ForeignKey(
         "Place",
+        help_text="",
         related_name="step",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """route  """
     route = models.ForeignKey(
         "Route",
+        help_text="",
         related_name="step",
         null=True,
         on_delete=models.DO_NOTHING
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Scene(models.Model):
-    """ scene シーン 名シーン、ざつ旅ARのマーカー [イベント]
-    """
+    class Meta:
+        db_table_comment = "scene シーン 名シーン、ざつ旅ARのマーカー [イベント]"
+        # ordering = []
+        # get_latest_by = []
 
-    """character  """
     character = models.ManyToManyField(
         "Character",
+        help_text="",
         related_name="scene",
     )
-    """memo 編集メモ """
     memo = models.TextField(
         verbose_name="編集メモ",
+        help_text="",
         null=True,
         blank=True
     )
-    """page ページ コミック掲載ページ"""
     page = models.PositiveIntegerField(
         verbose_name="ページ",
+        help_text="コミック掲載ページ",
         null=True,
         blank=True
     )
-    """place  """
     place = models.ForeignKey(
         "Place",
+        help_text="",
         related_name="scene",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """story  """
     story = models.ForeignKey(
         "Story",
+        help_text="",
         related_name="scene",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """type_master 分類 """
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
+        help_text="",
         related_name="scene",
         null=True,
         on_delete=models.DO_NOTHING
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Character(models.Model):
-    """ character キャラクター 主要5人、編集部、他 [リソース]
-    """
+    class Meta:
+        db_table_comment = "character キャラクター 主要5人、編集部、他 [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """description 紹介文 """
     description = models.TextField(
         verbose_name="紹介文",
+        help_text="",
         null=True,
         blank=True
     )
-    """name 名前 """
     name = models.CharField(
         verbose_name="名前",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """type_master 分類 type_master character ToDo"""
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
+        help_text="type_master character ToDo",
         related_name="character",
         null=True,
         on_delete=models.DO_NOTHING
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Photo(models.Model):
-    """ photo flickr (google place photo api有料) [リソース]
-    """
+    class Meta:
+        db_table_comment = "photo flickr (google place photo api有料) [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """height 画像高さ """
     height = models.PositiveIntegerField(
         verbose_name="画像高さ",
+        help_text="",
         null=True,
         blank=True
     )
-    """person  """
     person = models.ForeignKey(
         "Person",
+        help_text="",
         related_name="photo",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """step  """
     step = models.ForeignKey(
         "Step",
+        help_text="",
         related_name="photo",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """title タイトル """
     title = models.CharField(
         verbose_name="タイトル",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """type_master 分類 type_master photo 出典別？ ToDo"""
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
+        help_text="type_master photo 出典別？ ToDo",
         related_name="photo",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """url 参照URL """
     url = models.URLField(
         verbose_name="参照URL",
+        help_text="",
         null=True,
         blank=True
     )
-    """width 画像幅 """
     width = models.PositiveIntegerField(
         verbose_name="画像幅",
+        help_text="",
         null=True,
         blank=True
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Tweet(models.Model):
-    """ tweet Twitter 石坂さん、鈴ヶ森さん、読者等、無関係 [リソース]
-    """
+    class Meta:
+        db_table_comment = "tweet Twitter 石坂さん、鈴ヶ森さん、読者等、無関係 [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """description 内容 """
     description = models.TextField(
         verbose_name="内容",
+        help_text="",
         null=True,
         blank=True
     )
-    """person  """
     person = models.ForeignKey(
         "Person",
+        help_text="",
         related_name="tweet",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """step  """
     step = models.ForeignKey(
         "Step",
+        help_text="",
         related_name="tweet",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """type_master 分類 type_master tweet 鈴ヶ森さん、作者、巡礼・追走、 ToDo"""
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
+        help_text="type_master tweet 鈴ヶ森さん、作者、巡礼・追走、 ToDo",
         related_name="tweet",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """url 固定URL """
     url = models.URLField(
         verbose_name="固定URL",
+        help_text="",
         null=True,
         blank=True
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class Person(models.Model):
-    """ person コンテンツの作者 ツイート/写真を撮影した人 [リソース]
-    """
+    class Meta:
+        db_table_comment = "person コンテンツの作者 ツイート/写真を撮影した人 [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """memo 編集メモ """
     memo = models.TextField(
         verbose_name="編集メモ",
+        help_text="",
         null=True,
         blank=True
     )
-    """name 名前 """
     name = models.CharField(
         verbose_name="名前",
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """type_master 分類 type_master person ToDo"""
     type_master = models.ForeignKey(
         "Type_master",
         verbose_name="分類",
+        help_text="type_master person ToDo",
         related_name="person",
         null=True,
         on_delete=models.DO_NOTHING
     )
-    """user  """
     user = models.OneToOneField(
         "User",
+        help_text="",
         related_name="person",
         null=True,
         on_delete=models.CASCADE
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
 
 
 class User(models.Model):
-    """ user ユーザー 利用者 [リソース]
-    """
+    class Meta:
+        db_table_comment = "user ユーザー 利用者 [リソース]"
+        # ordering = []
+        # get_latest_by = []
 
-    """date_joined  """
     date_joined = models.DateTimeField(
+        help_text="",
         null=True
     )
-    """email  """
     email = models.CharField(
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """first_name  """
     first_name = models.CharField(
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """last_name  """
     last_name = models.CharField(
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
-    """username  """
     username = models.CharField(
+        help_text="",
         max_length=255,
         null=True,
         blank=True
     )
 
     def __str__(self):
-        return "{0}".format(self.id)
+        return "{0}".format(self.pk)
