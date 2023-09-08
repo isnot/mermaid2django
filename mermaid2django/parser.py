@@ -80,7 +80,7 @@ class ParseMermaidErDiagram:
         self.__last_comment = ""
         self.__now_entity_name = ""
 
-    def read_input(self):
+    def read_input(self) -> list | None:
         """
         read_input ファイルの内容を読み込む
 
@@ -96,12 +96,11 @@ class ParseMermaidErDiagram:
             fd = open(self.input_filename, "r", encoding="utf-8")
             lines = fd.readlines()
             fd.close()
+            if lines is not None and len(lines):
+                return lines
         except FileNotFoundError:
             print("ファイルをオープンできませんでした。")
             # raise RuntimeError("Can not open file")
-
-        if len(lines):
-            return lines
 
     def get_entities(self, via="list"):
         if via == "dict":
@@ -171,6 +170,8 @@ class ParseMermaidErDiagram:
             字句解析の結果
         """
         line = line.strip().rstrip("\n")
+        parser_command = ""
+        lexicalized = None
         for item in ParseMermaidErDiagram.LEX_TOKENS:
             parser_command = f"on_{item['type']}"
             lexicalized = self.split_tokenizer(line, item)
@@ -201,7 +202,10 @@ class ParseMermaidErDiagram:
             エンティティのリスト
         """
         self.on_start()
-        for line in self.read_input():
+        lines = self.read_input()
+        if lines is None:
+            raise RuntimeError("missing input file content")
+        for line in lines:
             parser_command, lexicalized = self.lexicalize_single(line)
             self.on_pre_command()
             getattr(self, parser_command)(lexicalized)
@@ -294,7 +298,7 @@ class ParseMermaidErDiagram:
         line : list, optional
             字句解析済みデータ, by default []
         """
-        m = self.get_current_entity()
+        m: None | Entity = self.get_current_entity()
         verbose = line[2].strip()
         if verbose.find("PK") != -1:
             isPK = True
@@ -310,14 +314,15 @@ class ParseMermaidErDiagram:
             verbose = ""
         else:
             verbose = verbose.replace('"', "").strip()
-        m.set_attributes(
-            type=line[0],
-            name=line[1],
-            isPK=isPK,
-            isFK=isFK,
-            verbose=verbose,
-            annotation=self.__last_comment.strip(),
-        )
+        if m is not None:
+            m.set_attributes(
+                type=line[0],
+                name=line[1],
+                isPK=isPK,
+                isFK=isFK,
+                verbose=verbose,
+                annotation=self.__last_comment.strip(),
+            )
         self.__last_comment = ""
 
     def on_relationship(self, items=[]):
