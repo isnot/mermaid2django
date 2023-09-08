@@ -6,44 +6,80 @@ from mermaid2django.render.abstract import AbstractRender
 class RenderDjangoModel(AbstractRender):
     DEFAULT_OUTPUT = "./models.py"
     MODULE_HEADER = "from django.db import models"
+    TYPE_TO_FIELD = {
+        "int": "PositiveIntegerField",
+        "bool": "BooleanField",
+        "datetime": "DateTimeField",
+        "url": "URLField",
+        "isbn": "ISBNField",
+        "(other)": "CapitalizedField",
+    }
     FIELD_OPTIONS = {
         "int": (
             'verbose_name="{verbose}",',
+            'help_text="{annotation}"',
+            "null=True,",
+            "blank=True",
+        ),
+        "decimal": (
+            'verbose_name="{verbose}",',
+            'help_text="{annotation}"',
+            "max_digits=9",
+            "decimal_places=6",
+            "null=True,",
+            "blank=True",
+        ),
+        "bool": (
+            'verbose_name="{verbose}",',
+            'help_text="{annotation}"',
             "null=True,",
             "blank=True",
         ),
         "char": (
             'verbose_name="{verbose}",',
+            'help_text="{annotation}"',
             "max_length=255,",
             "null=True,",
             "blank=True",
         ),
         "text": (
             'verbose_name="{verbose}",',
+            'help_text="{annotation}"',
             "null=True,",
             "blank=True",
         ),
         "url": (
             'verbose_name="{verbose}",',
+            'help_text="{annotation}"',
+            "null=True,",
+            "blank=True",
+        ),
+        "email": (
+            'verbose_name="{verbose}",',
+            'help_text="{annotation}"',
             "null=True,",
             "blank=True",
         ),
         "isbn": (
             'verbose_name="{verbose}",',
+            'help_text="{annotation}"',
             "null=True,",
             "blank=True",
         ),
         "date": (
             'verbose_name="{verbose}",',
+            'help_text="{annotation}"',
             "null=True",
         ),
         "datetime": (
             'verbose_name="{verbose}",',
+            'help_text="{annotation}"',
             "null=True",
         ),
         "rel": (
             '"{relation}",',
             'verbose_name="{verbose}",',
+            'help_text="{annotation}"',
             'related_name="{related_name}",',
         ),
         "one2many": (
@@ -178,14 +214,8 @@ class RenderDjangoModel(AbstractRender):
             )
         else:
             temp = self.get_template(attribute_type=type)
-            if type == "int":
-                model_type = "PositiveIntegerField"
-            elif type == "url":
-                model_type = "URLField"
-            elif type == "isbn":
-                model_type = "ISBNField"
-            elif type == "datetime":
-                model_type = "DateTimeField"
+            if type in RenderDjangoModel.TYPE_TO_FIELD:
+                model_type = RenderDjangoModel.TYPE_TO_FIELD[type]
             else:
                 model_type = type.capitalize() + "Field"
             line = temp.format(
@@ -206,12 +236,13 @@ class RenderDjangoModel(AbstractRender):
         return """
 
 class {name}(models.Model):
-    {mark} {description}
-    {mark}
+    class Meta:
+        db_table_comment = "{description}"
+        # ordering = []
+        # get_latest_by = []
 """.format(
             name=name.capitalize(),
             description=desc,
-            mark='"""',
         )
 
     def get_entity_footer(self):

@@ -44,9 +44,12 @@ class Entity:
     VALID_TYPES = (
         "serial",
         "int",
+        "decimal",
+        "bool",
         "char",
         "text",
         "url",
+        "email",
         "isbn",
         "date",
         "datetime",
