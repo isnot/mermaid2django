@@ -75,9 +75,9 @@ series {
 comic {
     serial id PK
     rel series FK
-    %% 第n巻 作品毎に呼び方のバリエーションがある
+    %% 第n巻 入力するのは数字のみ
     int number "巻数"
-    %% 例：ざつ旅-That's Journey- 1
+    %% 例：ざつ旅-That's Journey- 1。※巻数の表記は作品毎に呼び方のバリエーションがある
     char title "各巻タイトル"
     %% 特徴的な帯の文言
     char obi "オビ"
@@ -113,9 +113,9 @@ magazine {
     date released "発売日"
     %% 表紙や付録になった号、などを表すタグ
     char tag_line "管理用タグ"
-    %% https://dengekimaoh.jp/magazine/magazine-12240.html
+    %% 例: https://dengekimaoh.jp/magazine/magazine-nnnnn.html
     url site "雑誌リンク"
-    %% https://dengekimaoh.jp/archives/008/202208/941abdc5a8102a20bb186ae99e37f234c96e5209270d10b52c0293a2419db042.jpg
+    %% 例: https://dengekimaoh.jp/archives/008/202208/xxxxxxxx.jpg
     url cover_image "雑誌表紙"
     text memo "編集メモ"
 }
@@ -147,6 +147,7 @@ journey {
     serial id PK
     %% type_master journey
     rel type_master FK "分類"
+    %% 入力は数字のみ
     int number "第〇旅"
     char key "記号"
     text memo "編集メモ"
@@ -207,6 +208,7 @@ step {
     rel place FK
     int number "順番"
     datetime datetime "日時"
+    %% "zoom=14, pitch=60, bearing=0"
 }
 
 %% scene シーン 名シーン、ざつ旅ARのマーカー [イベント]
