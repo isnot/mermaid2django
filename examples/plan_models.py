@@ -12,54 +12,50 @@ class Series(models.Model):
         help_text="著者複数名の場合は、代表者をカンマ区切りで列挙する",
         max_length=255,
         null=True,
-        blank=True
+        blank=True,
     )
     label = models.CharField(
         verbose_name="レーベル",
         help_text="コミック・シリーズのレーベル名称 例：電撃コミックスNEXT",
         max_length=255,
         null=True,
-        blank=True
+        blank=True,
     )
     magazine_title = models.CharField(
         verbose_name="連載誌",
         help_text="雑誌連載の誌名か、Web連載のレーベル名称",
         max_length=255,
         null=True,
-        blank=True
+        blank=True,
     )
     publisher = models.CharField(
         verbose_name="出版社",
         help_text="出版社 例：KADOKAWA",
         max_length=255,
         null=True,
-        blank=True
+        blank=True,
     )
     rel_series_id = models.PositiveIntegerField(
         verbose_name="関係シリーズ",
         help_text="モデルにはあえてリレーションを定義せず (単方向リスト)",
         null=True,
-        blank=True
+        blank=True,
     )
     short_title = models.CharField(
         verbose_name="略称",
         help_text="略称や通称で代表的なもの",
         max_length=255,
         null=True,
-        blank=True
+        blank=True,
     )
     site = models.URLField(
         verbose_name="代表(公式)サイト",
         help_text="公式サイトや他のWebサイトから代表するものを1件",
         null=True,
-        blank=True
+        blank=True,
     )
     title = models.CharField(
-        verbose_name="作品名",
-        help_text="正確な作品の名称",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="作品名", help_text="正確な作品の名称", max_length=255, null=True, blank=True
     )
 
     def __str__(self):
@@ -73,60 +69,33 @@ class Comic(models.Model):
         # get_latest_by = []
 
     cover_image_url = models.URLField(
-        verbose_name="書影url",
-        help_text="版元ドットコムの書誌情報DBより",
-        null=True,
-        blank=True
+        verbose_name="書影url", help_text="版元ドットコムの書誌情報DBより", null=True, blank=True
     )
     isbn = models.CharField(
-        verbose_name="ISBN13",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="ISBN13", help_text="", max_length=255, null=True, blank=True
     )
-    issued = models.DateField(
-        verbose_name="発行日",
-        help_text="巻末の奥付にある、初版発行日",
-        null=True
-    )
-    memo = models.TextField(
-        verbose_name="編集メモ",
-        help_text="",
-        null=True,
-        blank=True
-    )
+    issued = models.DateField(verbose_name="発行日", help_text="巻末の奥付にある、初版発行日", null=True)
+    memo = models.TextField(verbose_name="編集メモ", help_text="", null=True, blank=True)
     number = models.PositiveIntegerField(
-        verbose_name="巻数",
-        help_text="第n巻 作品毎に呼び方のバリエーションがある",
-        null=True,
-        blank=True
+        verbose_name="巻数", help_text="第n巻 作品毎に呼び方のバリエーションがある", null=True, blank=True
     )
     obi = models.CharField(
-        verbose_name="オビ",
-        help_text="特徴的な帯の文言",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="オビ", help_text="特徴的な帯の文言", max_length=255, null=True, blank=True
     )
-    released = models.DateField(
-        verbose_name="書店発売日",
-        help_text="",
-        null=True
-    )
+    released = models.DateField(verbose_name="書店発売日", help_text="", null=True)
     series = models.ForeignKey(
         "Series",
         help_text="",
         related_name="comic",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     title = models.CharField(
         verbose_name="各巻タイトル",
         help_text="例：ざつ旅-That's Journey- 1",
         max_length=255,
         null=True,
-        blank=True
+        blank=True,
     )
 
     def __str__(self):
@@ -139,59 +108,30 @@ class Web_comic(models.Model):
         # ordering = []
         # get_latest_by = []
 
-    cw_published = models.DateField(
-        verbose_name="CW公開日",
-        help_text="",
-        null=True
-    )
+    cw_published = models.DateField(verbose_name="CW公開日", help_text="", null=True)
     cw_url = models.URLField(
-        verbose_name="Comic Walkerリンク",
-        help_text="",
-        null=True,
-        blank=True
+        verbose_name="Comic Walkerリンク", help_text="", null=True, blank=True
     )
-    memo = models.TextField(
-        verbose_name="編集メモ",
-        help_text="",
-        null=True,
-        blank=True
-    )
-    nico_published = models.DateField(
-        verbose_name="nico公開日",
-        help_text="",
-        null=True
-    )
+    memo = models.TextField(verbose_name="編集メモ", help_text="", null=True, blank=True)
+    nico_published = models.DateField(verbose_name="nico公開日", help_text="", null=True)
     nico_url = models.URLField(
-        verbose_name="ニコニコ静画リンク",
-        help_text="",
-        null=True,
-        blank=True
+        verbose_name="ニコニコ静画リンク", help_text="", null=True, blank=True
     )
     pages = models.PositiveIntegerField(
-        verbose_name="ページ数",
-        help_text="",
-        null=True,
-        blank=True
+        verbose_name="ページ数", help_text="", null=True, blank=True
     )
     part_number = models.PositiveIntegerField(
-        verbose_name="分割の順列",
-        help_text="",
-        null=True,
-        blank=True
+        verbose_name="分割の順列", help_text="", null=True, blank=True
     )
     story = models.ForeignKey(
         "Story",
         help_text="",
         related_name="web_comic",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     title = models.CharField(
-        verbose_name="各話の名前",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="各話の名前", help_text="", max_length=255, null=True, blank=True
     )
 
     def __str__(self):
@@ -208,38 +148,31 @@ class Magazine(models.Model):
         verbose_name="雑誌表紙",
         help_text="https://dengekimaoh.jp/archives/008/202208/941abdc5a8102a20bb186ae99e37f234c96e5209270d10b52c0293a2419db042.jpg",
         null=True,
-        blank=True
+        blank=True,
     )
-    memo = models.TextField(
-        verbose_name="編集メモ",
-        help_text="",
-        null=True,
-        blank=True
-    )
+    memo = models.TextField(verbose_name="編集メモ", help_text="", null=True, blank=True)
     released = models.DateField(
-        verbose_name="発売日",
-        help_text="書店等での発売日 ※タイトルの月の2か月前27日前後",
-        null=True
+        verbose_name="発売日", help_text="書店等での発売日 ※タイトルの月の2か月前27日前後", null=True
     )
     site = models.URLField(
         verbose_name="雑誌リンク",
         help_text="https://dengekimaoh.jp/magazine/magazine-12240.html",
         null=True,
-        blank=True
+        blank=True,
     )
     tag_line = models.CharField(
         verbose_name="管理用タグ",
         help_text="表紙や付録になった号、などを表すタグ",
         max_length=255,
         null=True,
-        blank=True
+        blank=True,
     )
     title = models.CharField(
         verbose_name="タイトル",
         help_text="雑誌のタイトル 例：電撃マオウ 2020年1月号",
         max_length=255,
         null=True,
-        blank=True
+        blank=True,
     )
 
     def __str__(self):
@@ -253,25 +186,13 @@ class Type_master(models.Model):
         # get_latest_by = []
 
     key = models.CharField(
-        verbose_name="属性",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="属性", help_text="", max_length=255, null=True, blank=True
     )
     name = models.CharField(
-        verbose_name="参照名",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="参照名", help_text="", max_length=255, null=True, blank=True
     )
     value = models.CharField(
-        verbose_name="値",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="値", help_text="", max_length=255, null=True, blank=True
     )
 
     def __str__(self):
@@ -289,32 +210,23 @@ class Fragment(models.Model):
         help_text="",
         related_name="fragment",
     )
-    memo = models.TextField(
-        verbose_name="編集メモ",
-        help_text="",
-        null=True,
-        blank=True
-    )
+    memo = models.TextField(verbose_name="編集メモ", help_text="", null=True, blank=True)
     place = models.ForeignKey(
         "Place",
         help_text="",
         related_name="fragment",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     story = models.ForeignKey(
         "Story",
         help_text="",
         related_name="fragment",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     title = models.CharField(
-        verbose_name="名前",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="名前", help_text="", max_length=255, null=True, blank=True
     )
     type_master = models.ForeignKey(
         "Type_master",
@@ -322,20 +234,15 @@ class Fragment(models.Model):
         help_text="type_master fragment",
         related_name="fragment",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
-    url = models.URLField(
-        verbose_name="参照URL/リンク",
-        help_text="",
-        null=True,
-        blank=True
-    )
+    url = models.URLField(verbose_name="参照URL/リンク", help_text="", null=True, blank=True)
     web_comic = models.ForeignKey(
         "Web_comic",
         help_text="",
         related_name="fragment",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
 
     def __str__(self):
@@ -349,23 +256,11 @@ class Journey(models.Model):
         # get_latest_by = []
 
     key = models.CharField(
-        verbose_name="記号",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="記号", help_text="", max_length=255, null=True, blank=True
     )
-    memo = models.TextField(
-        verbose_name="編集メモ",
-        help_text="",
-        null=True,
-        blank=True
-    )
+    memo = models.TextField(verbose_name="編集メモ", help_text="", null=True, blank=True)
     number = models.PositiveIntegerField(
-        verbose_name="第〇旅",
-        help_text="",
-        null=True,
-        blank=True
+        verbose_name="第〇旅", help_text="", null=True, blank=True
     )
     type_master = models.ForeignKey(
         "Type_master",
@@ -373,7 +268,7 @@ class Journey(models.Model):
         help_text="type_master journey",
         related_name="journey",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
 
     def __str__(self):
@@ -392,48 +287,37 @@ class Story(models.Model):
         help_text="place story このストーリーに登場する主な地点をすべて包含するような範囲(四角形)の中心",
         related_name="camera_center_place",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     camera_zoom_level = models.PositiveIntegerField(
-        verbose_name="(領域設定用)zoom",
-        help_text="",
-        null=True,
-        blank=True
+        verbose_name="(領域設定用)zoom", help_text="", null=True, blank=True
     )
     comic = models.ForeignKey(
         "Comic",
         help_text="",
         related_name="story",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     journey = models.ForeignKey(
         "Journey",
         help_text="",
         related_name="story",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     magazine = models.OneToOneField(
         "Magazine",
         help_text="",
         related_name="story",
         null=True,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     subtitle = models.CharField(
-        verbose_name="サブタイトル",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="サブタイトル", help_text="", max_length=255, null=True, blank=True
     )
     title = models.CharField(
-        verbose_name="単話タイトル",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="単話タイトル", help_text="", max_length=255, null=True, blank=True
     )
     type_master = models.ForeignKey(
         "Type_master",
@@ -441,7 +325,7 @@ class Story(models.Model):
         help_text="type_master story",
         related_name="story",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
 
     def __str__(self):
@@ -454,18 +338,9 @@ class Route(models.Model):
         # ordering = []
         # get_latest_by = []
 
-    memo = models.TextField(
-        verbose_name="編集メモ",
-        help_text="",
-        null=True,
-        blank=True
-    )
+    memo = models.TextField(verbose_name="編集メモ", help_text="", null=True, blank=True)
     name = models.CharField(
-        verbose_name="名前",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="名前", help_text="", max_length=255, null=True, blank=True
     )
     story = models.ManyToManyField(
         "Story",
@@ -478,7 +353,7 @@ class Route(models.Model):
         help_text="type_master route",
         related_name="route",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
 
     def __str__(self):
@@ -497,11 +372,7 @@ class Venue(models.Model):
         related_name="venue",
     )
     name = models.CharField(
-        verbose_name="名称",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="名称", help_text="", max_length=255, null=True, blank=True
     )
     story = models.ManyToManyField(
         "Story",
@@ -514,7 +385,7 @@ class Venue(models.Model):
         help_text="type_master venue",
         related_name="venue",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
 
     def __str__(self):
@@ -533,7 +404,7 @@ class Place(models.Model):
         max_digits=9,
         decimal_places=6,
         null=True,
-        blank=True
+        blank=True,
     )
     character = models.ManyToManyField(
         "Character",
@@ -546,7 +417,7 @@ class Place(models.Model):
         max_digits=9,
         decimal_places=6,
         null=True,
-        blank=True
+        blank=True,
     )
     longitude = models.DecimalField(
         verbose_name="経度",
@@ -554,20 +425,11 @@ class Place(models.Model):
         max_digits=9,
         decimal_places=6,
         null=True,
-        blank=True
+        blank=True,
     )
-    memo = models.TextField(
-        verbose_name="編集メモ",
-        help_text="",
-        null=True,
-        blank=True
-    )
+    memo = models.TextField(verbose_name="編集メモ", help_text="", null=True, blank=True)
     name = models.CharField(
-        verbose_name="地点名",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="地点名", help_text="", max_length=255, null=True, blank=True
     )
     story = models.ManyToManyField(
         "Story",
@@ -579,7 +441,7 @@ class Place(models.Model):
         help_text="",
         related_name="place",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
 
     def __str__(self):
@@ -592,30 +454,23 @@ class Step(models.Model):
         # ordering = []
         # get_latest_by = []
 
-    datetime = models.DateTimeField(
-        verbose_name="日時",
-        help_text="",
-        null=True
-    )
+    datetime = models.DateTimeField(verbose_name="日時", help_text="", null=True)
     number = models.PositiveIntegerField(
-        verbose_name="順番",
-        help_text="",
-        null=True,
-        blank=True
+        verbose_name="順番", help_text="", null=True, blank=True
     )
     place = models.ForeignKey(
         "Place",
         help_text="",
         related_name="step",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     route = models.ForeignKey(
         "Route",
         help_text="",
         related_name="step",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
 
     def __str__(self):
@@ -633,31 +488,23 @@ class Scene(models.Model):
         help_text="",
         related_name="scene",
     )
-    memo = models.TextField(
-        verbose_name="編集メモ",
-        help_text="",
-        null=True,
-        blank=True
-    )
+    memo = models.TextField(verbose_name="編集メモ", help_text="", null=True, blank=True)
     page = models.PositiveIntegerField(
-        verbose_name="ページ",
-        help_text="コミック掲載ページ",
-        null=True,
-        blank=True
+        verbose_name="ページ", help_text="コミック掲載ページ", null=True, blank=True
     )
     place = models.ForeignKey(
         "Place",
         help_text="",
         related_name="scene",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     story = models.ForeignKey(
         "Story",
         help_text="",
         related_name="scene",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     type_master = models.ForeignKey(
         "Type_master",
@@ -665,7 +512,7 @@ class Scene(models.Model):
         help_text="type_master scene",
         related_name="scene",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
 
     def __str__(self):
@@ -679,17 +526,10 @@ class Character(models.Model):
         # get_latest_by = []
 
     description = models.TextField(
-        verbose_name="紹介文",
-        help_text="",
-        null=True,
-        blank=True
+        verbose_name="紹介文", help_text="", null=True, blank=True
     )
     name = models.CharField(
-        verbose_name="名前",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="名前", help_text="", max_length=255, null=True, blank=True
     )
     type_master = models.ForeignKey(
         "Type_master",
@@ -697,7 +537,7 @@ class Character(models.Model):
         help_text="type_master character",
         related_name="character",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
 
     def __str__(self):
@@ -711,31 +551,24 @@ class Photo(models.Model):
         # get_latest_by = []
 
     height = models.PositiveIntegerField(
-        verbose_name="画像高さ",
-        help_text="",
-        null=True,
-        blank=True
+        verbose_name="画像高さ", help_text="", null=True, blank=True
     )
     person = models.ForeignKey(
         "Person",
         help_text="",
         related_name="photo",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     step = models.ForeignKey(
         "Step",
         help_text="",
         related_name="photo",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     title = models.CharField(
-        verbose_name="タイトル",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="タイトル", help_text="", max_length=255, null=True, blank=True
     )
     type_master = models.ForeignKey(
         "Type_master",
@@ -743,19 +576,11 @@ class Photo(models.Model):
         help_text="type_master photo",
         related_name="photo",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
-    url = models.URLField(
-        verbose_name="参照URL",
-        help_text="",
-        null=True,
-        blank=True
-    )
+    url = models.URLField(verbose_name="参照URL", help_text="", null=True, blank=True)
     width = models.PositiveIntegerField(
-        verbose_name="画像幅",
-        help_text="",
-        null=True,
-        blank=True
+        verbose_name="画像幅", help_text="", null=True, blank=True
     )
 
     def __str__(self):
@@ -769,24 +594,21 @@ class Tweet(models.Model):
         # get_latest_by = []
 
     description = models.TextField(
-        verbose_name="内容",
-        help_text="",
-        null=True,
-        blank=True
+        verbose_name="内容", help_text="", null=True, blank=True
     )
     person = models.ForeignKey(
         "Person",
         help_text="",
         related_name="tweet",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     step = models.ForeignKey(
         "Step",
         help_text="",
         related_name="tweet",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     type_master = models.ForeignKey(
         "Type_master",
@@ -794,14 +616,9 @@ class Tweet(models.Model):
         help_text="type_master tweet",
         related_name="tweet",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
-    url = models.URLField(
-        verbose_name="固定URL",
-        help_text="",
-        null=True,
-        blank=True
-    )
+    url = models.URLField(verbose_name="固定URL", help_text="", null=True, blank=True)
 
     def __str__(self):
         return "{0}".format(self.pk)
@@ -813,18 +630,9 @@ class Person(models.Model):
         # ordering = []
         # get_latest_by = []
 
-    memo = models.TextField(
-        verbose_name="編集メモ",
-        help_text="",
-        null=True,
-        blank=True
-    )
+    memo = models.TextField(verbose_name="編集メモ", help_text="", null=True, blank=True)
     name = models.CharField(
-        verbose_name="名前",
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="名前", help_text="", max_length=255, null=True, blank=True
     )
     type_master = models.ForeignKey(
         "Type_master",
@@ -832,14 +640,10 @@ class Person(models.Model):
         help_text="type_master person",
         related_name="person",
         null=True,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
     )
     user = models.OneToOneField(
-        "User",
-        help_text="",
-        related_name="person",
-        null=True,
-        on_delete=models.CASCADE
+        "User", help_text="", related_name="person", null=True, on_delete=models.CASCADE
     )
 
     def __str__(self):
@@ -852,34 +656,11 @@ class User(models.Model):
         # ordering = []
         # get_latest_by = []
 
-    date_joined = models.DateTimeField(
-        help_text="",
-        null=True
-    )
-    email = models.CharField(
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
-    )
-    first_name = models.CharField(
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
-    )
-    last_name = models.CharField(
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
-    )
-    username = models.CharField(
-        help_text="",
-        max_length=255,
-        null=True,
-        blank=True
-    )
+    date_joined = models.DateTimeField(help_text="", null=True)
+    email = models.CharField(help_text="", max_length=255, null=True, blank=True)
+    first_name = models.CharField(help_text="", max_length=255, null=True, blank=True)
+    last_name = models.CharField(help_text="", max_length=255, null=True, blank=True)
+    username = models.CharField(help_text="", max_length=255, null=True, blank=True)
 
     def __str__(self):
         return "{0}".format(self.pk)
