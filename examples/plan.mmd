@@ -14,8 +14,7 @@ erDiagram
     %% story その他雑多な絵に関連する単話
     story |o--o{ fragment : "関連する絵"
     story |o--o{ scene : ""
-    story }|--|{ venue : ""
-    story }|--|{ place : "ストーリー登場地点"
+    story }|--|{ venue : "ストーリー登場地点"
     %% camera_center_place ストーリー登場地点を含む領域(四角形)の中心座標
     place |o--|{ story : "領域"
     %% story 単話に登場する地点をルートとして表現する
@@ -28,7 +27,6 @@ erDiagram
     place |o--o{ scene : ""
     step |o--o{ tweet : ""
     step |o--o{ photo : ""
-    character }|--|{ place : ""
     character }|--o{ fragment : ""
     %% character 登場するキャラクター
     character }|--o{ scene : "登場"
@@ -192,9 +190,8 @@ venue {
 place {
     serial id PK
     rel venue FK
-    rel story FK
-    rel character FK
     char name "地点名"
+    char address "住所"
     decimal latitude "緯度"
     decimal longitude "経度"
     decimal altitude "高度"
@@ -241,7 +238,10 @@ photo {
     %% type_master photo
     rel type_master FK "分類"
     char title "タイトル"
-    url url "参照URL"
+    url link "参照ページURL"
+    url image_src "画像URL"
+    %% 参照先固有の、撮影者を識別する情報
+    char username "撮影者"
     int width "画像幅"
     int height "画像高さ"
 }
@@ -254,6 +254,10 @@ tweet {
     %% type_master tweet
     rel type_master FK "分類"
     url url "固定URL"
+    %% 桁数が大きいため、JSON等では数値型で扱えないことに注意
+    char tweet_id "Tweet ID"
+    %% @username は変わる可能性があることに注意
+    char username "ツイ主の@username"
     text description "内容"
 }
 
