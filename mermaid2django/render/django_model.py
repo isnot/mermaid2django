@@ -246,11 +246,22 @@ class {name}(models.Model):
         )
 
     def get_entity_footer(self):
-        return """
+        attributes = self.entity.get_attribute_names()
+        if "name" in attributes:
+            key = "name"
+        elif "title" in attributes:
+            key = "title"
+        else:
+            key = "pk"
 
-    def __str__(self):
-        return "{0}".format(self.pk)
-"""
+        tmpl = """    def __str__(self):
+        return "{0}".format(self.{1})
+""".format(
+            "{0}",
+            key,
+        )
+
+        return tmpl
 
     def get_model(self):
         entity_name = self.entity.get_name()
