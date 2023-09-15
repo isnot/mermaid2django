@@ -60,7 +60,9 @@ class Series(models.Model):
         max_length=255,
         null=True,
         blank=True,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.title)
 
 
@@ -125,7 +127,9 @@ class Comic(models.Model):
         max_length=255,
         null=True,
         blank=True,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.title)
 
 
@@ -188,7 +192,9 @@ class Web_comic(models.Model):
         max_length=255,
         null=True,
         blank=True,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.title)
 
 
@@ -234,7 +240,9 @@ class Magazine(models.Model):
         max_length=255,
         null=True,
         blank=True,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.title)
 
 
@@ -264,7 +272,9 @@ class Type_master(models.Model):
         max_length=255,
         null=True,
         blank=True,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.name)
 
 
@@ -326,7 +336,9 @@ class Fragment(models.Model):
         related_name="fragment",
         null=True,
         on_delete=models.DO_NOTHING,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.title)
 
 
@@ -362,7 +374,9 @@ class Journey(models.Model):
         related_name="journey",
         null=True,
         on_delete=models.DO_NOTHING,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.pk)
 
 
@@ -428,7 +442,9 @@ class Story(models.Model):
         related_name="story",
         null=True,
         on_delete=models.DO_NOTHING,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.title)
 
 
@@ -463,7 +479,9 @@ class Route(models.Model):
         related_name="route",
         null=True,
         on_delete=models.DO_NOTHING,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.name)
 
 
@@ -497,7 +515,9 @@ class Venue(models.Model):
         related_name="venue",
         null=True,
         on_delete=models.DO_NOTHING,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.name)
 
 
@@ -557,7 +577,9 @@ class Place(models.Model):
         related_name="place",
         null=True,
         on_delete=models.DO_NOTHING,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.name)
 
 
@@ -591,7 +613,9 @@ class Step(models.Model):
         related_name="step",
         null=True,
         on_delete=models.DO_NOTHING,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.pk)
 
 
@@ -639,7 +663,9 @@ class Scene(models.Model):
         related_name="scene",
         null=True,
         on_delete=models.DO_NOTHING,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.pk)
 
 
@@ -669,7 +695,9 @@ class Character(models.Model):
         related_name="character",
         null=True,
         on_delete=models.DO_NOTHING,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.name)
 
 
@@ -738,7 +766,9 @@ class Photo(models.Model):
         help_text="",
         null=True,
         blank=True,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.title)
 
 
@@ -795,7 +825,9 @@ class Tweet(models.Model):
         max_length=255,
         null=True,
         blank=True,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.pk)
 
 
@@ -832,7 +864,9 @@ class Person(models.Model):
         related_name="person",
         null=True,
         on_delete=models.CASCADE,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.name)
 
 
@@ -869,5 +903,7 @@ class User(models.Model):
         max_length=255,
         null=True,
         blank=True,
-    )    def __str__(self):
+    )
+
+    def __str__(self):
         return "{0}".format(self.pk)
