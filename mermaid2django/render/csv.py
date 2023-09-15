@@ -52,7 +52,7 @@ class RenderCsv(AbstractRender):
 
     def __init__(self, entities={}):
         self.entities = entities
-        self.entity_names = sorted(list(entities.keys()))
+        self.entity_names = list(sorted(list(entities.keys())))
         self._num_of_cols = len(list(self.ENTITY_HEAD))
 
     def extend_list(self, input, *args):
@@ -89,8 +89,8 @@ class RenderCsv(AbstractRender):
             desc = entity_desc.split(sep=" ", maxsplit=1)[1]
             cols = [
                 str(lines_index),  # "No",
-                entity_name,  # "物理名",
-                entity_name.capitalize(),  # "論理名",
+                str(entity_name),  # "物理名",
+                str(entity_name).capitalize(),  # "論理名",
                 desc,  # "用途",
                 "",  # "作成日",
                 "",  # "更新日",
