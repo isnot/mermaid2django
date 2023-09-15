@@ -261,7 +261,7 @@ class {name}(models.Model):
             key,
         )
 
-        return tmpl
+        return "\n\n" + tmpl
 
     def get_model(self):
         entity_name = self.entity.get_name()
