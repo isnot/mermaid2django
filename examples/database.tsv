@@ -30,21 +30,21 @@ No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制
 1			description	紹介文	text					
 2	✔		id		serial					
 3			name	名前	char					
-4		✔	type_master	分類	rel					type_master character ToDo
+4		✔	type_master	分類	rel					type_master character
 										
 
 comic										
 No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制	default	更新	備考
-1			cover_image_url	書影url	url					版元ドットコムの書誌情報DBより
+1			cover_image	書影url	url					版元ドットコムの書誌情報DBより
 2	✔		id		serial					
 3			isbn	ISBN13	char					
 4			issued	発行日	date					巻末の奥付にある、初版発行日
 5			memo	編集メモ	text					
-6			number	巻数	int					第n巻 作品毎に呼び方のバリエーションがある
+6			number	巻数	int					第n巻 入力するのは数字のみ
 7			obi	オビ	char					特徴的な帯の文言
 8			released	書店発売日	date					
 9		✔	series		rel					
-10			title	各巻タイトル	char					例：ざつ旅-That's Journey- 1
+10			title	各巻タイトル	char					例：ざつ旅-That's Journey- 1。※巻数の表記は作品毎に呼び方のバリエーションがある
 										
 
 fragment										
@@ -55,7 +55,7 @@ No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制
 4		✔	place		rel					
 5		✔	story		rel					
 6			title	名前	char					
-7		✔	type_master	分類 種別	rel					
+7		✔	type_master	分類	rel					type_master fragment
 8			url	参照URL/リンク	url					
 9		✔	web_comic		rel					
 										
@@ -65,17 +65,17 @@ No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制
 1	✔		id		serial					
 2			key	記号	char					
 3			memo	編集メモ	text					
-4			number	第〇旅	int					
-5		✔	type_master	分類	rel					type_master 1:本編 2:番外旅 9:その他 ToDo
+4			number	第〇旅	int					入力は数字のみ
+5		✔	type_master	分類	rel					type_master journey
 										
 
 magazine										
 No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制	default	更新	備考
-1			cover_image	雑誌表紙	url					https://dengekimaoh.jp/archives/008/202208/941abdc5a8102a20bb186ae99e37f234c96e5209270d10b52c0293a2419db042.jpg
+1			cover_image	雑誌表紙	url					例: https://dengekimaoh.jp/archives/008/202208/xxxxxxxx.jpg
 2	✔		id		serial					
 3			memo	編集メモ	text					
 4			released	発売日	date					書店等での発売日 ※タイトルの月の2か月前27日前後
-5			site	雑誌リンク	url					https://dengekimaoh.jp/magazine/magazine-12240.html
+5			site	雑誌リンク	url					例: https://dengekimaoh.jp/magazine/magazine-nnnnn.html
 6			tag_line	管理用タグ	char					表紙や付録になった号、などを表すタグ
 7			title	タイトル	char					雑誌のタイトル 例：電撃マオウ 2020年1月号
 										
@@ -85,7 +85,7 @@ No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制
 1	✔		id		serial					
 2			memo	編集メモ	text					
 3			name	名前	char					
-4		✔	type_master	分類	rel					type_master person ToDo
+4		✔	type_master	分類	rel					type_master person
 5		✔	user		rel					
 										
 
@@ -93,25 +93,26 @@ photo
 No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制	default	更新	備考
 1			height	画像高さ	int					
 2	✔		id		serial					
-3		✔	person		rel					
-4		✔	step		rel					
-5			title	タイトル	char					
-6		✔	type_master	分類	rel					type_master photo 出典別？ ToDo
-7			url	参照URL	url					
-8			width	画像幅	int					
+3			image_src	画像URL	url					
+4			link	参照ページURL	url					
+5		✔	person		rel					
+6		✔	step		rel					
+7			title	タイトル	char					
+8		✔	type_master	分類	rel					type_master photo
+9			username	撮影者	char					参照先固有の、撮影者を識別する情報
+10			width	画像幅	int					
 										
 
 place										
 No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制	default	更新	備考
-1			altitude	高度	char					
-2		✔	character		rel					
+1			address	住所	char					
+2			altitude	高度	decimal					
 3	✔		id		serial					
-4			latitude	緯度	char					
-5			longitude	経度	char					
+4			latitude	緯度	decimal					
+5			longitude	経度	decimal					
 6			memo	編集メモ	text					
 7			name	地点名	char					
-8		✔	story		rel					
-9		✔	venue		rel					
+8		✔	venue		rel					
 										
 
 route										
@@ -120,7 +121,7 @@ No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制
 2			memo	編集メモ	text					
 3			name	名前	char					
 4		✔	story		rel					
-5		✔	type_master	分類	rel					type_master 鈴ヶ森さんツイ、作者、マップ取り込み、調整済 ToDo
+5		✔	type_master	分類	rel					type_master route
 										
 
 scene										
@@ -131,7 +132,7 @@ No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制
 4			page	ページ	int					コミック掲載ページ
 5		✔	place		rel					
 6		✔	story		rel					
-7		✔	type_master	分類	rel					
+7		✔	type_master	分類	rel					type_master scene
 										
 
 series										
@@ -166,7 +167,7 @@ No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制
 6		✔	magazine		rel					
 7			subtitle	サブタイトル	char					
 8			title	単話タイトル	char					
-9		✔	type_master	分類	rel					type_master 本編、番外旅、おうちで料理 ToDo
+9		✔	type_master	分類	rel					type_master story
 										
 
 tweet										
@@ -175,8 +176,10 @@ No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制
 2	✔		id		serial					
 3		✔	person		rel					
 4		✔	step		rel					
-5		✔	type_master	分類	rel					type_master tweet 鈴ヶ森さん、作者、巡礼・追走、 ToDo
-6			url	固定URL	url					
+5			tweet_id	Tweet ID	char					桁数が大きいため、JSON等では数値型で扱えないことに注意
+6		✔	type_master	分類	rel					type_master tweet
+7			url	固定URL	url					
+8			username	ツイ主の@username	char					@username は変わる可能性があることに注意
 										
 
 type_master										
@@ -199,11 +202,10 @@ No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制
 
 venue										
 No	主キー	外部キー	カラム名	項目名	データ型	NOT NULL	一意制	default	更新	備考
-1		✔	comic		rel					
-2	✔		id		serial					
-3			name	名称	char					
-4		✔	story		rel					
-5		✔	type_master	分類	rel					type_master 1:都道府県 2:市区町村 3:番地等の細かい行政界 5:著名観光地 6:ランドマーク、顕著な建造物、施設 7:道、航路、等
+1	✔		id		serial					
+2			name	名称	char					
+3		✔	story		rel					
+4		✔	type_master	分類	rel					type_master venue
 										
 
 web_comic										

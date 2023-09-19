@@ -69,11 +69,11 @@ class Type_masterAdmin(admin.ModelAdmin):
 
 @admin.register(Fragment)
 class FragmentAdmin(admin.ModelAdmin):
-    fields = ["memo", "title", "url", "type_master", "place", "story", "web_comic"]
+    fields = ["memo", "title", "url", "web_comic", "type_master", "place", "story"]
     # list_filter = ["type_master", ""]
     # search_fields = ["title", "name", "memo"]
-    list_display = ("id", "memo", "title", "url", "type_master", "place", "story", "web_comic",)
-    list_display_links = ("memo", "title", "url", "type_master", "place", "story", "web_comic",)
+    list_display = ("id", "memo", "title", "url", "web_comic", "type_master", "place", "story",)
+    list_display_links = ("memo", "title", "url", "web_comic", "type_master", "place", "story",)
 
 
 @admin.register(Journey)
@@ -87,11 +87,11 @@ class JourneyAdmin(admin.ModelAdmin):
 
 @admin.register(Story)
 class StoryAdmin(admin.ModelAdmin):
-    fields = ["camera_zoom_level", "subtitle", "title", "comic", "magazine", "journey", "place", "type_master"]
+    fields = ["camera_zoom_level", "subtitle", "title", "comic", "place", "journey", "magazine", "type_master"]
     # list_filter = ["type_master", ""]
     # search_fields = ["title", "name", "memo"]
-    list_display = ("id", "camera_zoom_level", "subtitle", "title", "comic", "magazine", "journey", "place", "type_master",)
-    list_display_links = ("camera_zoom_level", "subtitle", "title", "comic", "magazine", "journey", "place", "type_master",)
+    list_display = ("id", "camera_zoom_level", "subtitle", "title", "comic", "place", "journey", "magazine", "type_master",)
+    list_display_links = ("camera_zoom_level", "subtitle", "title", "comic", "place", "journey", "magazine", "type_master",)
 
 
 @admin.register(Route)
@@ -123,20 +123,20 @@ class PlaceAdmin(admin.ModelAdmin):
 
 @admin.register(Step)
 class StepAdmin(admin.ModelAdmin):
-    fields = ["datetime", "number", "place", "route"]
+    fields = ["datetime", "number", "route", "place"]
     # list_filter = ["type_master", ""]
     # search_fields = ["title", "name", "memo"]
-    list_display = ("id", "datetime", "number", "place", "route",)
-    list_display_links = ("datetime", "number", "place", "route",)
+    list_display = ("id", "datetime", "number", "route", "place",)
+    list_display_links = ("datetime", "number", "route", "place",)
 
 
 @admin.register(Scene)
 class SceneAdmin(admin.ModelAdmin):
-    fields = ["memo", "page", "place", "type_master", "story"]
+    fields = ["memo", "page", "story", "type_master", "place"]
     # list_filter = ["type_master", ""]
     # search_fields = ["title", "name", "memo"]
-    list_display = ("id", "memo", "page", "place", "type_master", "story",)
-    list_display_links = ("memo", "page", "place", "type_master", "story",)
+    list_display = ("id", "memo", "page", "story", "type_master", "place",)
+    list_display_links = ("memo", "page", "story", "type_master", "place",)
 
 
 @admin.register(Character)
@@ -150,11 +150,11 @@ class CharacterAdmin(admin.ModelAdmin):
 
 @admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
-    fields = ["height", "image_src", "link", "title", "username", "width", "person", "type_master", "step"]
+    fields = ["height", "image_src", "link", "title", "username", "width", "type_master", "step", "person"]
     # list_filter = ["type_master", ""]
     # search_fields = ["title", "name", "memo"]
-    list_display = ("id", "height", "image_src", "link", "title", "username", "width", "person", "type_master", "step",)
-    list_display_links = ("height", "image_src", "link", "title", "username", "width", "person", "type_master", "step",)
+    list_display = ("id", "height", "image_src", "link", "title", "username", "width", "type_master", "step", "person",)
+    list_display_links = ("height", "image_src", "link", "title", "username", "width", "type_master", "step", "person",)
 
 
 @admin.register(Tweet)

@@ -491,11 +491,6 @@ class Venue(models.Model):
         # ordering = []
         # get_latest_by = []
 
-    comic = models.ManyToManyField(
-        "Comic",
-        help_text="",
-        related_name="venue",
-    )
     name = models.CharField(
         verbose_name="名称",
         help_text="",
