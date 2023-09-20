@@ -36,7 +36,7 @@ class RenderDjangoAdmin(AbstractRender):
         for rel in rels:
             if rel.type != "many2many" and rel.leaf[1] == entity.get_name():
                 items.append('"{0}"'.format(rel.leaf[0]))
-        return ", ".join(items)
+        return ", ".join(sorted(items))
 
     def get_template(self):
         return """    fields = [{fields}]
